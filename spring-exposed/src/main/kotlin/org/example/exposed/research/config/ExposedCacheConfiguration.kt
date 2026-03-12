@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Profile
 
 // Section 5.4 — enable Spring Cache for the exposed profile
 @Configuration
-@Profile("exposed")
+@Profile("cache")
 @EnableCaching
 class ExposedCacheConfiguration
