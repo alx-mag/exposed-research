@@ -1,6 +1,6 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.entity
 
-import org.example.exposed.research.exposed.UserResponse
+import org.example.exposed.research.dto.UserResponse
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.dao.IntEntity

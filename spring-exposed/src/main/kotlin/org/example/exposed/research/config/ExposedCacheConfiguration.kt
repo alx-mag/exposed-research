@@ -1,4 +1,4 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.config
 
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration

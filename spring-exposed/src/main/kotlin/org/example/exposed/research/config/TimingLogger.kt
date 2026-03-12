@@ -1,4 +1,4 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.config
 
 import org.jetbrains.exposed.v1.core.SqlLogger
 import org.jetbrains.exposed.v1.core.Transaction

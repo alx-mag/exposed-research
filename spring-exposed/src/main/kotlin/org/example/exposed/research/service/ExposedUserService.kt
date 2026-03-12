@@ -1,6 +1,7 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.service
 
-import org.example.exposed.research.exposed.UserResponse
+import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.entity.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

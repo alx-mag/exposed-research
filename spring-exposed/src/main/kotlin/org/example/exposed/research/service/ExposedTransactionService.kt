@@ -1,5 +1,8 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.service
 
+import org.example.exposed.research.dto.UserDto
+import org.example.exposed.research.entity.Cities
+import org.example.exposed.research.entity.Users
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.springframework.stereotype.Service

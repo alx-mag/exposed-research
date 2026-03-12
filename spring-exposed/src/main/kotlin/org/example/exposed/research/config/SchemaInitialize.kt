@@ -1,5 +1,10 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.config
 
+import org.example.exposed.research.entity.Cities
+import org.example.exposed.research.entity.Profiles
+import org.example.exposed.research.entity.Roles
+import org.example.exposed.research.entity.UserRoles
+import org.example.exposed.research.entity.Users
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner

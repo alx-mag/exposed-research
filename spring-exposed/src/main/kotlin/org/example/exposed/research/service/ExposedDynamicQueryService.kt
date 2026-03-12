@@ -1,5 +1,7 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.service
 
+import org.example.exposed.research.dto.UserDto
+import org.example.exposed.research.entity.Users
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.jdbc.andWhere

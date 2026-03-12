@@ -1,23 +1,17 @@
-package org.example.exposed.research.exposed
+package org.example.exposed.research.service
 
+import org.example.exposed.research.entity.Cities
+import org.example.exposed.research.entity.City
+import org.example.exposed.research.entity.User
+import org.example.exposed.research.entity.UserNameEmail
+import org.example.exposed.research.entity.Users
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greater
-import org.jetbrains.exposed.v1.dao.IntEntity
-import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
-// Section 4.7 — projection entity mapped to the same Users table
-class UserNameEmail(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<UserNameEmail>(Users)
-
-    val name  by Users.name
-    val email by Users.email
-}
 
 @Service
 class ExposedCrudService {
