@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.2.21"
+    id("me.champeau.jmh") version "0.7.2"
 }
 
 group = "org.example"
@@ -42,18 +43,25 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    jmhImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
+    jmhImplementation("org.testcontainers:testcontainers:2.0.3")
+}
+
+jmh {
+    warmupIterations.set(3)
+    iterations.set(5)
+    fork.set(1)
+    timeUnit.set("ms")
+    benchmarkMode.addAll("avgt")
+    resultFormat.set("JSON")
+    resultsFile.set(project.file("${project.layout.buildDirectory}/results/jmh/results.json"))
 }
 
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
     }
-}
-
-allOpen {
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
 }
 
 tasks.withType<Test> {
