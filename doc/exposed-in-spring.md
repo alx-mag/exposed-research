@@ -162,8 +162,7 @@ spring.exposed.show-sql=true
 
 Starter автоматически создаёт `Database` бин на основе Spring DataSource и подключает `SpringTransactionManager`, интегрирующий транзакции Exposed с `@Transactional`.
 
-[//]: # (!В SpringBoot 4, кажется, этого не делают)
-Рекомендуется исключить `DataSourceTransactionManagerAutoConfiguration`, чтобы Spring не создавал стандартный `DataSourceTransactionManager` — он конфликтует с `SpringTransactionManager` из Exposed, что может привести к тому, что транзакции управляются не тем менеджером:
+В Spring Boot 3 рекомендовалось исключить `DataSourceTransactionManagerAutoConfiguration`, чтобы Spring не создавал стандартный `DataSourceTransactionManager` — он конфликтует с `SpringTransactionManager` из Exposed, что может привести к тому, что транзакции управляются не тем менеджером. В Spring Boot 4 `exposed-spring-boot4-starter` регистрирует `SpringTransactionManager` как основной менеджер транзакций — ручное исключение не требуется:
 
 ```kotlin
 @SpringBootApplication(exclude = [DataSourceTransactionManagerAutoConfiguration::class])
@@ -599,7 +598,9 @@ class UserService {
 
 ### 5.2. Маппинг типов
 
-Стандартные SQL-типы: `varchar`, `integer`, `long`, `bool`, `decimal`, `blob`, `text`.
+Стандартные SQL-типы: `varchar`, `char`, `text`, `integer`, `long`, `short`, `float`, `double`, `decimal`, `bool`, `blob`, `binary`, `uuid`.
+
+Для денежных значений встроенного типа `money` нет — рекомендуется `decimal` с нужной точностью (`decimal(19, 4)`). Для временны́х меток (Instant) используются модули `exposed-kotlin-datetime` (`timestamp` → `kotlinx.datetime.Instant`) или `exposed-java-time` (`timestamp` → `java.time.Instant`).
 
 Дата/время — три модуля на выбор:
 
@@ -687,7 +688,7 @@ object TimingLogger : SqlLogger {
 
 **Spring Data JPA / Hibernate:** оборачивает JDBC-исключения в иерархию `DataAccessException` автоматически через `PersistenceExceptionTranslator`. Это позволяет ловить типизированные исключения: `DataIntegrityViolationException`, `EmptyResultDataAccessException` и т.д.
 
-> !Revision
+> !Need revision
 
 **Exposed:** пробрасывает JDBC-исключения (`SQLException`) наружу. Собственной иерархии исключений нет. При использовании `@Transactional` в Spring Boot исключения оборачиваются в Spring-иерархию (`DataAccessException`), если настроен `PersistenceExceptionTranslationPostProcessor`. Без этой настройки — приходится ловить `ExposedSQLException` и анализировать SQL-state вручную.
 
@@ -695,13 +696,26 @@ object TimingLogger : SqlLogger {
 
 Транзакции в Spring Boot управляются Spring и привязаны к потоку запроса. Exposed предоставляет `newSuspendedTransaction {}` для корутин, но в контексте Spring Boot это не рекомендуется — `newSuspendedTransaction` обходит `SpringTransactionManager`, и Spring не знает о такой транзакции. Корутинная интеграция Exposed рассчитана на Ktor и другие coroutine-first фреймворки.
 
----
+### 5.8. Загрузка связанных сущностей
 
-## 6. Бенчмарки: производительность Exposed vs JPA
+В Exposed DAO связанные сущности загружаются **лениво** по умолчанию: обращение к связанному объекту внутри транзакции порождает отдельный SELECT. Для **жадной загрузки** используется функция `with()`:
+
+```kotlin
+// Ленивая загрузка — N+1 запросов для 200 пользователей
+User.all().toList().forEach { println(it.city?.name) }
+
+// Жадная загрузка — 2 запроса: один для users, один для cities
+User.all().with(User::city).toList().forEach { println(it.city?.name) }
+```
+
+`with()` принимает ссылки на свойства-связи и загружает их одним дополнительным запросом для всей коллекции. Для вложенных связей можно передать несколько свойств: `with(User::city, User::profile)`.
+
+---
+## 6. [SKELETON] Бенчмарки: производительность Exposed vs JPA
 
 ### 6.1. Методология
 
-Окружение: Spring Boot, PostgreSQL, JMH с warmup. Одинаковая схема данных, одинаковые индексы, один DataSource (HikariCP). Метрики: среднее время операции, p95, p99.
+Окружение: Spring Boot, PostgreSQL, JMH с warmup. Одинаковая схема данных, одинаковые индексы, один DataSource (HikariCP). Метрики: среднее время операции, p95, p99. Hibernate L2-кэш отключён (`hibernate.cache.use_second_level_cache=false`) для исключения влияния кэширования на результаты.
 
 ### 6.2. Exposed DAO vs JPA Entity
 
@@ -710,25 +724,17 @@ object TimingLogger : SqlLogger {
 | Чтение по ID | `userRepository.findById(id)` | `User.findById(id)` |
 | Создание | `userRepository.save(User(...))` | `User.new { ... }` |
 | Обновление | `entity.name = "new"; save()` | `entity.name = "new"` (dirty tracking) |
+| Фильтрация | `repository.findAll(Specification)` (Criteria API) | `User.find { Users.age greaterEq 18 }` |
 
-Ожидание: производительность сопоставима — основной overhead в обоих случаях JDBC + сеть.
-
-### 6.3. Exposed DSL vs JPQL / Criteria API
+### 6.3. Exposed DSL vs JPQL
 
 | Операция | JPA | Exposed DSL |
 |----------|-----|-------------|
-| Batch insert | `saveAll()` / `persist()` в цикле | `Users.batchInsert(items) { ... }` |
+| Batch insert | `@Modifying @Query` с нативным `INSERT` | `Users.batchInsert(items) { ... }` |
 | SELECT с JOIN | `@Query` с JPQL | `Users.innerJoin(Cities).selectAll().where { ... }` |
 | Bulk update | `@Modifying @Query` | `Users.update({ ... }) { ... }` |
 
 Exposed DSL может быть быстрее в batch-операциях и bulk update за счёт отсутствия overhead на dirty checking и proxy-объекты.
-
-### 6.4. Дополнительные сценарии
-
-- Batch insert 1000+ записей: Exposed `batchInsert` vs JPA с `hibernate.jdbc.batch_size`
-- Проблема N+1: в JPA проявляется через lazy loading; в Exposed DSL отсутствует — JOIN пишется явно
-- Startup time: Exposed не сканирует аннотированные сущности — предположительно, быстрее
-- Memory footprint: Exposed не создаёт proxy-объекты, нет L2-кэша
 
 ---
 
