@@ -1,10 +1,6 @@
 package org.example.exposed.research.exp.service
 
-import org.example.exposed.research.entity.Cities
-import org.example.exposed.research.entity.City
-import org.example.exposed.research.entity.User
-import org.example.exposed.research.entity.UserNameEmail
-import org.example.exposed.research.entity.Users
+import org.example.exposed.research.exp.entity.*
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq

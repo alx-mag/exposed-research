@@ -7,6 +7,7 @@ version = "0.0.1-SNAPSHOT"
 description = "spring-exposed"
 
 dependencies {
+    implementation(project(":utils"))
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
