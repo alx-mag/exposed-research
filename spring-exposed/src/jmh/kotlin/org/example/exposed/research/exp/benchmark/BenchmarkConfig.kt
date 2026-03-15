@@ -1,5 +1,6 @@
 package org.example.exposed.research.exp.benchmark
 
+import org.example.exposed.research.exp.SpringExposedApplication
 import org.springframework.boot.SpringApplication
 import org.springframework.context.ConfigurableApplicationContext
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -10,7 +11,7 @@ object BenchmarkConfig {
         .apply { start() }
 
     val context: ConfigurableApplicationContext by lazy {
-        val app = SpringApplication(org.example.exposed.research.SpringExposedApplication::class.java)
+        val app = SpringApplication(SpringExposedApplication::class.java)
         app.setDefaultProperties(
             mapOf(
                 "spring.datasource.url" to postgres.jdbcUrl,

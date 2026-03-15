@@ -38,7 +38,6 @@ jmh {
     benchmarkMode.addAll("avgt")
     resultFormat.set("JSON")
     resultsFile.set(project.layout.buildDirectory.file("results/jmh/results.json"))
-    includes = listOf("DaoCrudBenchmark")
 }
 
 tasks.withType<Test>().configureEach {

@@ -1,7 +1,7 @@
 package org.example.exposed.research.exp.benchmark
 
-import org.example.exposed.research.entity.Cities
-import org.example.exposed.research.entity.Users
+import org.example.exposed.research.exp.entity.Cities
+import org.example.exposed.research.exp.entity.Users
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.batchInsert
@@ -53,7 +53,7 @@ open class DslBenchmark {
             Users.innerJoin(Cities)
                 .selectAll()
                 .toList()
-        } ?: emptyList()
+        }
 
     @Benchmark
     fun bulkUpdate(state: BenchmarkState): Int =
@@ -61,5 +61,5 @@ open class DslBenchmark {
             Users.update({ Users.age less 30 }) {
                 it[Users.age] = 99
             }
-        } ?: 0
+        }
 }

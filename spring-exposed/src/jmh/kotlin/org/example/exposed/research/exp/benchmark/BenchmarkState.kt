@@ -1,9 +1,9 @@
 package org.example.exposed.research.exp.benchmark
 
-import org.example.exposed.research.entity.Cities
-import org.example.exposed.research.entity.City
-import org.example.exposed.research.entity.Users
-import org.example.exposed.research.service.ExposedCrudService
+import org.example.exposed.research.exp.entity.Cities
+import org.example.exposed.research.exp.entity.City
+import org.example.exposed.research.exp.entity.Users
+import org.example.exposed.research.exp.service.ExposedCrudService
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteAll
@@ -22,12 +22,14 @@ open class BenchmarkState {
     var seedCityId: Int = 0
 
     @Setup(Level.Trial)
+    @Suppress("unused")
     fun setupTrial() {
         crudService = BenchmarkConfig.bean()
         transactionTemplate = BenchmarkConfig.bean()
     }
 
     @Setup(Level.Iteration)
+    @Suppress("unused")
     fun setupIteration() {
         transactionTemplate.execute {
             Users.deleteAll()

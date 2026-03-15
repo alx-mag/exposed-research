@@ -26,3 +26,7 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+jmh {
+    includes = listOf("DaoCrudBenchmark")
+}

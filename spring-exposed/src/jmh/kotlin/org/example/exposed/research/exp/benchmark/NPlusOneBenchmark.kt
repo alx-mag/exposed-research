@@ -1,8 +1,8 @@
 package org.example.exposed.research.exp.benchmark
 
-import org.example.exposed.research.entity.Cities
-import org.example.exposed.research.entity.User
-import org.example.exposed.research.entity.Users
+import org.example.exposed.research.exp.entity.Cities
+import org.example.exposed.research.exp.entity.User
+import org.example.exposed.research.exp.entity.Users
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
@@ -28,5 +28,5 @@ open class NPlusOneBenchmark {
         state.transactionTemplate.execute {
             // Single JOIN query — 1 query total
             Users.leftJoin(Cities).selectAll().toList().size
-        } ?: 0
+        }
 }
