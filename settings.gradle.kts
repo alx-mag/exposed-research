@@ -22,5 +22,6 @@ plugins {
 include(":app")
 include(":utils")
 include(":spring-exposed")
+include(":spring-jpa")
 
 rootProject.name = "exposed-research"

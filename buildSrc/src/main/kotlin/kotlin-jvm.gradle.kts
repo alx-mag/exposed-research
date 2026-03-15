@@ -7,11 +7,38 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin in JVM projects.
     kotlin("jvm")
+    kotlin("plugin.spring")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    id("me.champeau.jmh")
 }
 
 kotlin {
     // Use a specific Java version to make it easier to work in different environments.
-    jvmToolchain(25)
+    jvmToolchain(24)
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xjsr305=strict",
+            "-Xannotation-default-target=param-property"
+        )
+    }
+}
+
+dependencies {
+    jmhImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
+    jmhImplementation("org.testcontainers:testcontainers:2.0.3")
+}
+
+jmh {
+    warmupIterations.set(3)
+    iterations.set(5)
+    fork.set(1)
+    timeUnit.set("ms")
+    benchmarkMode.addAll("avgt")
+    resultFormat.set("JSON")
+    resultsFile.set(project.layout.buildDirectory.file("results/jmh/results.json"))
+    includes = listOf("DaoCrudBenchmark")
 }
 
 tasks.withType<Test>().configureEach {
