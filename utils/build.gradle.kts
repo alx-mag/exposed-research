@@ -10,4 +10,9 @@ dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(libs.bundles.kotlinxEcosystem)
     testImplementation(kotlin("test"))
+
+    compileOnly("org.openjdk.jmh:jmh-core:1.37")
+    compileOnly("org.springframework.boot:spring-boot")
+    compileOnly("org.testcontainers:testcontainers:2.0.3")
+    compileOnly("org.testcontainers:testcontainers-postgresql:2.0.3")
 }

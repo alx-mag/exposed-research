@@ -1,5 +1,6 @@
 package org.example.exposed.research.exp.benchmark
 
+import org.example.exposed.research.benchmark.AbstractBenchmarkState
 import org.example.exposed.research.exp.entity.Cities
 import org.example.exposed.research.exp.entity.City
 import org.example.exposed.research.exp.entity.Users
@@ -7,30 +8,19 @@ import org.example.exposed.research.exp.service.ExposedCrudService
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteAll
-import org.openjdk.jmh.annotations.Level
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.Setup
-import org.openjdk.jmh.annotations.State
 import org.springframework.transaction.support.TransactionTemplate
 
-@State(Scope.Benchmark)
-open class BenchmarkState {
+open class BenchmarkState : AbstractBenchmarkState() {
 
     lateinit var crudService: ExposedCrudService
     lateinit var transactionTemplate: TransactionTemplate
-    var seedUserId: Int = 0
-    var seedCityId: Int = 0
 
-    @Setup(Level.Trial)
-    @Suppress("unused")
-    fun setupTrial() {
+    override fun setupTrial() {
         crudService = BenchmarkConfig.bean()
         transactionTemplate = BenchmarkConfig.bean()
     }
 
-    @Setup(Level.Iteration)
-    @Suppress("unused")
-    fun setupIteration() {
+    override fun setupIteration() {
         transactionTemplate.execute {
             Users.deleteAll()
             Cities.deleteAll()

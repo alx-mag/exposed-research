@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :spring-exposed:jmhCompileGeneratedClasses:*)",
+      "Bash(./gradlew :spring-jpa:jmhCompileGeneratedClasses:*)"
+    ]
+  }
+}

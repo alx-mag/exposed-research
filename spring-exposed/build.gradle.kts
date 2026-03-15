@@ -29,5 +29,5 @@ dependencies {
 }
 
 jmh {
-    includes = listOf("DaoCrudBenchmark")
+//    includes = listOf("DaoCrudBenchmark")
 }

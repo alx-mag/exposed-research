@@ -23,6 +23,14 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    jmhImplementation(project(":utils"))
+    jmhImplementation("org.testcontainers:testcontainers-postgresql")
+    jmhRuntimeOnly("org.postgresql:postgresql")
+}
+
+jmh {
+    includes = listOf("JpaCrudBenchmark")
 }
 
 allOpen {
