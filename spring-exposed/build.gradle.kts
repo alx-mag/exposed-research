@@ -3,13 +3,12 @@ plugins {
     kotlin("plugin.spring") version "2.2.21"
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
-    kotlin("plugin.jpa") version "2.2.21"
     id("me.champeau.jmh") version "0.7.2"
 }
 
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
-description = "spring-exposed-vs-jpa"
+description = "spring-exposed"
 
 java {
     toolchain {
@@ -22,8 +21,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
 
@@ -55,7 +52,8 @@ jmh {
     timeUnit.set("ms")
     benchmarkMode.addAll("avgt")
     resultFormat.set("JSON")
-    resultsFile.set(project.file("${project.layout.buildDirectory}/results/jmh/results.json"))
+    resultsFile.set(project.layout.buildDirectory.file("results/jmh/results.json"))
+    includes = listOf("DaoCrudBenchmark")
 }
 
 kotlin {

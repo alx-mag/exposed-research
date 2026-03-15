@@ -4,6 +4,7 @@ import org.example.exposed.research.entity.Cities
 import org.example.exposed.research.entity.City
 import org.example.exposed.research.entity.Users
 import org.example.exposed.research.service.ExposedCrudService
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.openjdk.jmh.annotations.Level
@@ -42,7 +43,7 @@ open class BenchmarkState {
                 this[Users.name] = "User$i"
                 this[Users.email] = "user$i@test.com"
                 this[Users.age] = 20 + (i % 50)
-                this[Users.city] = org.jetbrains.exposed.v1.core.dao.id.EntityID(cityIds[i % cityIds.size], Cities)
+                this[Users.city] = EntityID(cityIds[i % cityIds.size], Cities)
             }
             seedUserId = userRows.first()[Users.id].value
         }

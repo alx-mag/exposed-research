@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
+@ImportAutoConfiguration(ExposedAutoConfiguration::class)
 class SpringExposedApplication
 
 fun main(args: Array<String>) {
