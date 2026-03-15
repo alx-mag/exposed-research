@@ -9,7 +9,7 @@ kotlinxSerializationJSON = "1.9.0"
 kotlinxCoroutines = "1.10.2"
 springBoot = "4.0.3"
 springDependencyManagement = "1.1.7"
-jmh = "0.7.2"
+jmh = "0.7.3"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

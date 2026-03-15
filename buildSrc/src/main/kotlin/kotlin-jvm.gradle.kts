@@ -37,7 +37,7 @@ jmh {
     timeUnit.set("ms")
     benchmarkMode.addAll("avgt")
     resultFormat.set("JSON")
-    resultsFile.set(project.layout.buildDirectory.file("results/jmh/results.json"))
+    resultsFile.set(layout.buildDirectory.file("results/jmh/results.json"))
 }
 
 tasks.withType<Test>().configureEach {

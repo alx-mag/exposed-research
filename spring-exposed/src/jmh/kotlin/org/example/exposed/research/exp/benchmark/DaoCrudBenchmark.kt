@@ -10,17 +10,23 @@ import java.util.concurrent.TimeUnit
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 open class DaoCrudBenchmark {
 
-    // Section 6.2 — DAO CRUD benchmarks
-
     @Benchmark
     fun findById(state: BenchmarkState): Any? =
         state.crudService.findById(state.seedUserId)
 
     @Benchmark
     fun create(state: BenchmarkState): Any =
-        state.crudService.create("BenchUser", "b@test.com", 25, state.seedCity)
+        state.crudService.create(
+            "BenchUser",
+            "b@test.com",
+            25,
+            state.seedCity
+        )
 
     @Benchmark
     fun update(state: BenchmarkState): Any? =
-        state.crudService.update(state.seedUserId, "Updated")
+        state.crudService.update(
+            state.seedUserId,
+            "Updated"
+        )
 }
