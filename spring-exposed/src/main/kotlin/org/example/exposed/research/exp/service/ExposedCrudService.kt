@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ExposedCrudService {
 
-    // Section 4.2 — CRUD operations
-
     @Transactional
     fun create(name: String, email: String, age: Int, city: City): User =
         User.new { this.name = name; this.email = email; this.age = age; this.city = city }
@@ -27,8 +25,14 @@ class ExposedCrudService {
         User.all().toList()
 
     @Transactional
-    fun update(id: Int, name: String): User? =
-        User.findById(id)?.apply { this.name = name }
+    fun update(
+        id: Int,
+        name: String
+    ): User? {
+        val user = User.findById(id)
+        user?.name = name
+        return user
+    }
 
     @Transactional
     fun delete(id: Int) {

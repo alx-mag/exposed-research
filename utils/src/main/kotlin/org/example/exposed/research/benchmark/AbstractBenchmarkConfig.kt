@@ -22,7 +22,6 @@ abstract class AbstractBenchmarkConfig {
                 "spring.datasource.driverClassName" to "org.postgresql.Driver",
             ) + additionalProperties()
         )
-        app.setAdditionalProfiles("local")
         val ctx = app.run()
         Runtime.getRuntime().addShutdownHook(Thread {
             ctx.close()

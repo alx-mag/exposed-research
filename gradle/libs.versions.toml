@@ -10,6 +10,8 @@ kotlinxCoroutines = "1.10.2"
 springBoot = "4.0.3"
 springDependencyManagement = "1.1.7"
 jmh = "0.7.3"
+jmhCore = "1.37"
+testcontainers = "2.0.3"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -17,6 +19,10 @@ kotlinAllOpen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = 
 springBootGradlePlugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
 springDependencyManagementPlugin = { module = "io.spring.gradle:dependency-management-plugin", version.ref = "springDependencyManagement" }
 jmhGradlePlugin = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmh" }
+jmhCore = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmhCore" }
+springBootCore = { module = "org.springframework.boot:spring-boot" }
+testcontainersCore = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainersPostgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }

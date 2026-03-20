@@ -6,7 +6,8 @@ import org.jetbrains.exposed.v1.dao.IntEntityClass
 
 // Section 4.7 — projection entity mapped to the same Users table
 class UserNameEmail(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<UserNameEmail>(Users)
+    companion object :
+        IntEntityClass<UserNameEmail>(Users)
 
     val name  by Users.name
     val email by Users.email

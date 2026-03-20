@@ -11,8 +11,8 @@ dependencies {
     implementation(libs.bundles.kotlinxEcosystem)
     testImplementation(kotlin("test"))
 
-    compileOnly("org.openjdk.jmh:jmh-core:1.37")
-    compileOnly("org.springframework.boot:spring-boot")
-    compileOnly("org.testcontainers:testcontainers:2.0.3")
-    compileOnly("org.testcontainers:testcontainers-postgresql:2.0.3")
+    compileOnly(libs.jmhCore)
+    compileOnly(libs.springBootCore)
+    compileOnly(libs.testcontainersCore)
+    compileOnly(libs.testcontainersPostgresql)
 }

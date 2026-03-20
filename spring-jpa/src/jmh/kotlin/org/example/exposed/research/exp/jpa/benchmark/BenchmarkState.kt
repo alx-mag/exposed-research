@@ -17,10 +17,10 @@ open class BenchmarkState : AbstractBenchmarkState() {
     lateinit var seedCity: City
 
     override fun setupTrial() {
-        userService = BenchmarkConfig.bean()
-        userRepository = BenchmarkConfig.bean()
-        cityRepository = BenchmarkConfig.bean()
-        transactionTemplate = BenchmarkConfig.bean()
+        userService = JpaBenchmarkConfig.bean()
+        userRepository = JpaBenchmarkConfig.bean()
+        cityRepository = JpaBenchmarkConfig.bean()
+        transactionTemplate = JpaBenchmarkConfig.bean()
     }
 
     override fun setupIteration() {

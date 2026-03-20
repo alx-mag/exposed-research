@@ -16,8 +16,8 @@ open class BenchmarkState : AbstractBenchmarkState() {
     lateinit var transactionTemplate: TransactionTemplate
 
     override fun setupTrial() {
-        crudService = BenchmarkConfig.bean()
-        transactionTemplate = BenchmarkConfig.bean()
+        crudService = ExposedBenchmarkConfig.bean()
+        transactionTemplate = ExposedBenchmarkConfig.bean()
     }
 
     override fun setupIteration() {
