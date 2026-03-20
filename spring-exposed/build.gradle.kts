@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+
 plugins {
     id("buildsrc.convention.kotlin-jvm")
 }
@@ -28,6 +30,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-jmh {
-//    includes = listOf("DaoCrudBenchmark")
+tasks.withType<BootBuildImage> {
+    imageName.set("alx-mag/${rootProject.name}-${project.name}")
 }
