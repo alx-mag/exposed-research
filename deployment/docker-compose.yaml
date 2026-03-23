@@ -12,12 +12,25 @@ services:
       - ../prometheus/prom.yaml:/etc/prometheus/prometheus.yml
     container_name: prometheus
 
+#  db-service:
+#    image: 'postgres:latest'
+#    ports:
+#      - "5000:5432"
+#    deploy:
+#      replicas: 1
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 250M
+#        reservations:
+#          memory: 250M
+
   db-service:
+    container_name: db-service
     image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+    restart: always
+    env_file:
+      - ../db/.env
     ports:
       - "5000:5432"
     deploy:
@@ -28,7 +41,6 @@ services:
           memory: 250M
         reservations:
           memory: 250M
-
 
   nginx:
     container_name: nginx
@@ -44,13 +56,13 @@ services:
     deploy:
       replicas: 1
 
-#  influxdb:
-#    container_name: influxdb
-#    image: influxdb:1.8
-#    ports:
-#      - "8086:8086"
-#    environment:
-#      - INFLUXDB_DB=k6
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
 
   grafana:
     container_name: grafana

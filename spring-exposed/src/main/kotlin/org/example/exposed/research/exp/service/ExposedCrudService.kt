@@ -1,5 +1,9 @@
 package org.example.exposed.research.exp.service
 
+import org.example.exposed.research.exp.dto.CreateUserRequest
+import org.example.exposed.research.exp.dto.UpdateUserRequest
+import org.example.exposed.research.exp.dto.UserResponse
+import org.example.exposed.research.exp.dto.toResponse
 import org.example.exposed.research.exp.entity.*
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
@@ -15,6 +19,23 @@ class ExposedCrudService {
     @Transactional
     fun create(name: String, email: String, age: Int, city: City): User =
         User.new { this.name = name; this.email = email; this.age = age; this.city = city }
+
+    @Transactional
+    fun create(request: CreateUserRequest): UserResponse {
+        return User.new {
+            name = request.name
+            email = request.email
+            age = request.age
+        }.toResponse()
+    }
+
+    @Transactional
+    fun update(id: Int, request: UpdateUserRequest): User {
+        val user = User.findById(id)
+            ?: throw NoSuchElementException("User $id not found")
+        user.name = request.name
+        return user
+    }
 
     @Transactional(readOnly = true)
     fun findById(id: Int): User? =
