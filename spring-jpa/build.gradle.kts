@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.withType
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+
 plugins {
     id("buildsrc.convention.kotlin-jvm")
     alias(libs.plugins.kotlinPluginJpa)
@@ -34,4 +37,8 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+tasks.withType<BootBuildImage> {
+    imageName.set("alx-mag/${rootProject.name}-${project.name}")
 }

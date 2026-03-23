@@ -20,7 +20,7 @@ export let options = {
 };
 
 export default function () {
-  const url = `http://localhost:${__ENV.PORT}/`
+  const url = __ENV.BASE_URL || `http://${__ENV.HOST || 'localhost'}:${__ENV.PORT}/`;
 
   const params = {
     headers: {

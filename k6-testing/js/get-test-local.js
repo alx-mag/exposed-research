@@ -2,41 +2,41 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 
-const getTrend = new Trend('Get Books');
-const getErrorRate = new Rate('Get Books error');
+const getTrend = new Trend('GetUsers');
+const getErrorRate = new Rate('GetUsersError');
 
 export let options = {
-  stages: [
-      { duration: "10s", target: `${__ENV.USERS}` },
-      { duration: "100s", target: `${__ENV.USERS}` },
-      { duration: "10s", target: 0 }
-  ]
+    stages: [
+        { duration: "10s", target: `${__ENV.USERS}` },
+        { duration: "100s", target: `${__ENV.USERS}` },
+        { duration: "10s", target: 0 }
+    ]
 };
 
 export default function () {
-  const url = `http://localhost:${__ENV.PORT}/`
+    const url = __ENV.BASE_URL || `http://${__ENV.HOST || 'localhost'}:${__ENV.PORT}/`;
 
-  const params = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const requests = {
-      'Get Books': {
-        method: 'GET',
-        url: url +'books/simple',
-        params: params,
-      }
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
     };
 
-  const responses = http.batch(requests);
-  const getResp = responses['Get Books'];
+    const requests = {
+        'Get Users': {
+            method: 'GET',
+            url: url +'api/users',
+            params: params,
+        }
+    };
 
-  check(getResp, {
-    'status is 200': (r) => r.status === 200,
-  }) || getErrorRate.add(1);
+    const responses = http.batch(requests);
+    const getResp = responses['Get Users'];
 
-  getTrend.add(getResp.timings.duration);
+    check(getResp, {
+        'status is 200': (r) => r.status === 200,
+    }) || getErrorRate.add(1);
+
+    getTrend.add(getResp.timings.duration);
 
 }

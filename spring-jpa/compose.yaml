@@ -6,3 +6,6 @@ services:
       - 'POSTGRES_USER=postgres'
     ports:
       - '5432'
+    volumes:
+      - ../db/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ../db/02-data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro

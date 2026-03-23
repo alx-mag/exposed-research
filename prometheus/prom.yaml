@@ -6,5 +6,4 @@ scrape_configs:
   - job_name: 'spring-boot-app'
     metrics_path: '/actuator/prometheus'
     static_configs:
-#      - targets: ['spring-exposed:8080','spring-jpa:8080']
-      - targets: ['spring-exposed:8080']
+      - targets: ['spring-exposed:8080', 'spring-jpa:8080']
