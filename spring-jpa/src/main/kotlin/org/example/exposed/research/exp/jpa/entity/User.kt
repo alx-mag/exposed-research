@@ -1,13 +1,14 @@
 package org.example.exposed.research.exp.jpa.entity
 
-import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 // Section 4.6 — JPA User entity with all relationship types
@@ -18,16 +19,26 @@ class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int? = null,
 
+    @Column(nullable = false, length = 255)
     var name: String = "",
+    @Column(nullable = false, length = 255)
     var email: String = "",
+    @Column(nullable = false)
     var age: Int = 0,
 
-    @ManyToOne                              // Many-to-One
+    @ManyToOne
+    @JoinColumn(name = "city_id")
     var city: City? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL])  // One-to-One
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
     var profile: Profile? = null,
 
-    @ManyToMany                             // Many-to-Many
+    @ManyToMany
+    @JoinTable(
+        name = "userroles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
     var roles: MutableList<Role> = mutableListOf()
 )
