@@ -14,28 +14,6 @@ import org.springframework.stereotype.Service
 @Service
 class JpaUserService(private val repo: UserRepository) {
 
-    // Section 4.2 — CRUD via JpaRepository
-
-    fun create(
-        name: String,
-        email: String,
-        age: Int,
-        city: City
-    ): User {
-        val user = User(name = name, email = email, age = age, city = city)
-        return repo.save(user)
-    }
-
-    fun createUserExample(city: City) {
-        val user = User(
-            name = "alice",
-            email = "alice@example.com",
-            age = 30,
-            city = city
-        )
-        repo.save(user)
-    }
-
     fun readUserExample(name: String) =
         repo.findByName(name)
 

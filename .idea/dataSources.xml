@@ -13,7 +13,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:postgresql://127.0.0.1:64199/postgres?ApplicationName=spring-jpa [DEBUG]" group="​JPA: dev" uuid="211b6ece-ef9e-488a-a42b-e5de9e860a31">
+    <data-source source="LOCAL" name="jdbc:postgresql://127.0.0.1:64199/postgres?ApplicationName=spring-jpa [DEBUG]" group="​JPA: dev" uuid="5810364a-7573-4cca-8c41-4d2fea422083">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
