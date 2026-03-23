@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 // Sections 4.2, 4.3, 4.5, 4.7, 4.8
-interface UserRepository : JpaRepository<User, Int> {
+interface UserRepository : JpaRepository<User, Int>, JpaSpecificationExecutor<User> {
+    fun findByName(name: String): List<User>
+
     @Query("""SELECT u 
 FROM JpaUser u 
 WHERE u.age > :minAge AND u.city.name = :city""")

@@ -1,10 +1,10 @@
 package org.example.exposed.research.exp.service
 
-import org.example.exposed.research.exp.dto.CreateUserRequest
-import org.example.exposed.research.exp.dto.UpdateUserRequest
-import org.example.exposed.research.exp.dto.UserResponse
-import org.example.exposed.research.exp.dto.toResponse
+import org.example.exposed.research.dto.CreateUserRequest
+import org.example.exposed.research.dto.UpdateUserRequest
+import org.example.exposed.research.dto.UserResponse
 import org.example.exposed.research.exp.entity.*
+import org.example.exposed.research.exp.mapper.toResponse
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq

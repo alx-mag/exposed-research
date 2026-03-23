@@ -1,16 +1,16 @@
 package org.example.exposed.research.exp.controller
 
-import org.example.exposed.research.exp.dto.CreateUserRequest
-import org.example.exposed.research.exp.dto.UpdateUserRequest
-import org.example.exposed.research.exp.dto.UserResponse
-import org.example.exposed.research.exp.dto.toResponse
+import org.example.exposed.research.dto.CreateUserRequest
+import org.example.exposed.research.dto.UpdateUserRequest
+import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.exp.mapper.toResponse
 import org.example.exposed.research.exp.service.ExposedCrudService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
-class MyController(private val service: ExposedCrudService) {
+class UserController(private val service: ExposedCrudService) {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)

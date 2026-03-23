@@ -8,6 +8,8 @@ version = "0.0.1-SNAPSHOT"
 description = "spring-jpa"
 
 dependencies {
+    implementation(project(":utils"))
+
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")

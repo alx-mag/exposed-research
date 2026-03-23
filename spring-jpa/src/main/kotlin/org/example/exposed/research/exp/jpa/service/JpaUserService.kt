@@ -1,5 +1,7 @@
 package org.example.exposed.research.exp.jpa.service
 
+import org.example.exposed.research.dto.CreateUserRequest
+import org.example.exposed.research.dto.UpdateUserRequest
 import org.example.exposed.research.exp.jpa.entity.City
 import org.example.exposed.research.exp.jpa.entity.User
 import org.example.exposed.research.exp.jpa.repo.UserRepository
@@ -43,20 +45,40 @@ class JpaUserService(private val repo: UserRepository) {
     fun findAll(): List<User> =
         repo.findAll()
 
-fun update(
-    id: Int,
-    name: String
-): User? {
-    val user = repo.findById(id)
-        .orElse(null)
-        ?: return null
-    user.name = name
-    return repo.save(user)
-}
+    fun create(request: CreateUserRequest): User {
+        val user = User(
+            name = request.name,
+            email = request.email,
+            age = request.age
+        )
+        return repo.save(user)
+    }
 
-fun delete(id: Int) {
-    repo.deleteById(id)
-}
+    fun update(
+        id: Int,
+        request: UpdateUserRequest
+    ): User {
+        val user = repo.findById(id)
+            .orElse(null)
+            ?: throw NoSuchElementException("User $id not found")
+        user.name = request.name
+        return repo.save(user)
+    }
+
+    fun update(
+        id: Int,
+        name: String
+    ): User? {
+        val user = repo.findById(id)
+            .orElse(null)
+            ?: return null
+        user.name = name
+        return repo.save(user)
+    }
+
+    fun delete(id: Int) {
+        repo.deleteById(id)
+    }
 
     // Section 4.4 — pagination via Pageable
 

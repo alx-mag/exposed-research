@@ -1,0 +1,33 @@
+package org.example.exposed.research.exp.jpa.controller
+
+import org.example.exposed.research.dto.CreateUserRequest
+import org.example.exposed.research.dto.UpdateUserRequest
+import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.exp.jpa.mapper.toResponse
+import org.example.exposed.research.exp.jpa.service.JpaUserService
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+
+@RestController
+@RequestMapping("/api")
+class UserController(private val service: JpaUserService) {
+
+    @PostMapping("/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createUser(@RequestBody request: CreateUserRequest): UserResponse {
+        return service.create(request).toResponse()
+    }
+
+    @PutMapping("/users/{id}")
+    fun updateUser(
+        @PathVariable id: Int,
+        @RequestBody request: UpdateUserRequest
+    ): UserResponse {
+        return service.update(id, request).toResponse()
+    }
+
+    @GetMapping("/users")
+    fun getUsers(): List<UserResponse> {
+        return service.findAll().map { it.toResponse() }
+    }
+}
