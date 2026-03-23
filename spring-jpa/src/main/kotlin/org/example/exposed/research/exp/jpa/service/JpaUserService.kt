@@ -2,7 +2,6 @@ package org.example.exposed.research.exp.jpa.service
 
 import org.example.exposed.research.dto.CreateUserRequest
 import org.example.exposed.research.dto.UpdateUserRequest
-import org.example.exposed.research.exp.jpa.entity.City
 import org.example.exposed.research.exp.jpa.entity.User
 import org.example.exposed.research.exp.jpa.repo.UserRepository
 import org.springframework.data.domain.Page
