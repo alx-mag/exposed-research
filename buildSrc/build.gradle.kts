@@ -15,5 +15,4 @@ dependencies {
     implementation(libs.kotlinAllOpen)
     implementation(libs.springBootGradlePlugin)
     implementation(libs.springDependencyManagementPlugin)
-    implementation(libs.jmhGradlePlugin)
 }

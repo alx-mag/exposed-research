@@ -10,7 +10,6 @@ plugins {
     kotlin("plugin.spring")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("me.champeau.jmh")
 }
 
 kotlin {
@@ -23,21 +22,6 @@ kotlin {
             "-Xannotation-default-target=param-property"
         )
     }
-}
-
-dependencies {
-    jmhImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
-    jmhImplementation("org.testcontainers:testcontainers:2.0.3")
-}
-
-jmh {
-    warmupIterations.set(3)
-    iterations.set(5)
-    fork.set(1)
-    timeUnit.set("ms")
-    benchmarkMode.addAll("avgt")
-    resultFormat.set("JSON")
-    resultsFile.set(layout.buildDirectory.file("results/jmh/results.json"))
 }
 
 tasks.withType<Test>().configureEach {
