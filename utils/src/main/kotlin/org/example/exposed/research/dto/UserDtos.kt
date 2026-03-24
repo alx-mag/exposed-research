@@ -4,4 +4,16 @@ data class CreateUserRequest(val name: String, val email: String, val age: Int)
 
 data class UpdateUserRequest(val name: String)
 
-data class UserResponse(val id: Int, val name: String, val email: String, val age: Int)
+data class UserResponse(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val age: Int
+)
+
+data class UserFilter(
+    val name: String? = null,
+    val email: String? = null,
+    val minAge: Int? = null,
+    val maxAge: Int? = null
+)
