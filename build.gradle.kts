@@ -13,44 +13,39 @@ object Service {
 
 val k6TestingDir = layout.projectDirectory.dir("k6-testing")
 
-val k6Script = providers.gradleProperty("script")
-val k6Users = providers.gradleProperty("users").orElse("20")
-val k6SleepMs = providers.gradleProperty("sleepMs").orElse("0")
-val k6BaseUrl = providers.gradleProperty("baseUrl")
-
 tasks.register<K6ExecTask>("k6ExposedGetUsers") {
     description = "Run the containerized Exposed get-users test."
     workingDirectory.set(k6TestingDir)
-    script.convention("get-test.js")
-    users.set(k6Users)
-    sleepMs.set(k6SleepMs)
-    baseUrl.set(Service.EXPOSED)
+    script = "get-test.js"
+    users = 20
+    sleepMs = 0
+    baseUrl = Service.EXPOSED
 }
 
 tasks.register<K6ExecTask>("k6ExposedFiltering") {
     description = "Run the containerized Exposed filtering test."
     workingDirectory.set(k6TestingDir)
-    script.convention("get-filtering-test.js")
-    users.set(k6Users)
-    sleepMs.set(k6SleepMs)
-    baseUrl.set(Service.EXPOSED)
+    script = "get-filtering-test.js"
+    users = 20
+    sleepMs = 0
+    baseUrl = Service.EXPOSED
 }
 
 tasks.register<K6ExecTask>("k6JpaGetUsers") {
     description = "Run the containerized JPA get-users test."
     workingDirectory.set(k6TestingDir)
-    script.convention("get-test.js")
-    users.set(k6Users)
-    sleepMs.set(k6SleepMs)
-    baseUrl.set(Service.JPA)
+    script = "get-test.js"
+    users = 20
+    sleepMs = 0
+    baseUrl = Service.JPA
 }
 
 tasks.register<K6ExecTask>("k6JpaFiltering") {
     description = "Run the containerized JPA filtering test."
     workingDirectory.set(k6TestingDir)
-    script.convention("get-filtering-test.js")
-    users.set(k6Users)
-    sleepMs.set(k6SleepMs)
-    baseUrl.set(Service.JPA)
+    script = "get-filtering-test.js"
+    users = 20
+    sleepMs = 0
+    baseUrl = Service.JPA
 }
 
