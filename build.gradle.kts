@@ -4,29 +4,49 @@ import Service.JPA
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 
+val prepareDb by tasks.register<Exec>("prepareDb") {
+    description = "Execute db/clear-data.sql against the running db-service PostgreSQL container."
+    val sqlFile = layout.projectDirectory.file("db/clear-data.sql").asFile
+    doFirst {
+        standardInput = sqlFile.inputStream()
+    }
+    commandLine(
+        "docker",
+        "exec",
+        "-i",
+        "db-service",
+        "psql",
+        "-U",
+        "postgres",
+        "-d",
+        "postgres"
+    )
+}
+
 /// Exposed ///
 tasks.register<Exec>("k6-GetUsers-Exposed") {
-    description = "Run the containerized Exposed get-users test."
+    dependsOn(prepareDb)
     runK6("get-test.js", EXPOSED)
 }
 
 tasks.register<Exec>("k6-GetUsersFiltering-Exposed") {
-    description = "Run the containerized Exposed filtering test."
+    dependsOn(prepareDb)
     runK6("get-filtering-test.js", EXPOSED)
 }
 
 tasks.register<Exec>("k6-LoadTest-Exposed") {
+    dependsOn(prepareDb)
     runK6("load-test.js", EXPOSED)
 }
 
 /// JPA ///
 tasks.register<Exec>("k6GetUsersJpa") {
-    description = "Run the containerized JPA get-users test."
+    dependsOn(prepareDb)
     runK6("get-test.js", JPA)
 }
 
 tasks.register<Exec>("k6GetUsersFilteringJpa") {
-    description = "Run the containerized JPA filtering test."
+    dependsOn(prepareDb)
     runK6("get-filtering-test.js", JPA)
 }
 
