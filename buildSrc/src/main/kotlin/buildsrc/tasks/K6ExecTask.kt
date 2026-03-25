@@ -3,6 +3,7 @@ package buildsrc.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -15,11 +16,13 @@ import javax.inject.Inject
 
 @DisableCachingByDefault(because = "Runs an external k6 process.")
 abstract class K6ExecTask @Inject constructor(
-    private val execOperations: ExecOperations
+    private val execOperations: ExecOperations,
+    projectLayout: ProjectLayout
 ) : DefaultTask() {
 
     init {
         group = "k6"
+        workingDirectory.convention(projectLayout.projectDirectory.dir("k6-testing"))
     }
 
     @get:Optional
