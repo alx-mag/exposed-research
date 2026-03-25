@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 // Section 4.6 — JPA User entity with all relationship types
@@ -41,5 +42,8 @@ class User(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role_id")]
     )
-    var roles: MutableList<Role> = mutableListOf()
+    var roles: MutableList<Role> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user")
+    var orders: MutableList<Order> = mutableListOf()
 )

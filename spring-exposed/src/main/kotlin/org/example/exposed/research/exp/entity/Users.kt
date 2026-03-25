@@ -23,4 +23,5 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var city by City optionalReferencedOn Users.city      // Many-to-One (nullable)
     var profile by Profile optionalReferencedOn Users.profile // One-to-One (nullable)
     var roles by Role via UserRoles                         // Many-to-Many
+    val orders by Order referrersOn Orders.user
 }

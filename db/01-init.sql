@@ -50,4 +50,32 @@ create table userroles
         primary key (user_id, role_id)
 );
 
-insert into users(name, email, age) values ('Aleksandr', 'alx@example.com', 33)
+CREATE TABLE books
+(
+    book_id SERIAL,
+    title   varchar(255) NOT NULL,
+    author  varchar(255) NOT NULL,
+    isbn    varchar(255) NOT NULL,
+    year    integer      NOT NULL,
+    CONSTRAINT books_pkey PRIMARY KEY (book_id)
+);
+
+CREATE TABLE orders
+(
+    order_id SERIAL,
+    user_id  integer NOT NULL,
+    book_id  integer NOT NULL,
+    quantity integer NOT NULL,
+    CONSTRAINT orders_pkey PRIMARY KEY (order_id),
+    CONSTRAINT orders_book_id_fkey FOREIGN KEY (book_id)
+        REFERENCES books (book_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT orders_user_id_fkey FOREIGN KEY (user_id)
+        REFERENCES users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+insert into users(name, email, age)
+values ('Aleksandr', 'alx@example.com', 33)
