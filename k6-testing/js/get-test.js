@@ -5,6 +5,15 @@ import { Trend, Rate } from 'k6/metrics';
 const getTrend = new Trend('GetUsers');
 const getErrorRate = new Rate('GetUsersError');
 
+function logIfNot200(name, response) {
+  if (response.status === 200) {
+    return;
+  }
+  console.error(
+    `[${name}] status=${response.status} method=${response.request.method} url=${response.request.url} body=${JSON.stringify(response.body)}`
+  );
+}
+
 export let options = {
   stages: [
       { duration: "10s", target: `${__ENV.USERS}` },
@@ -37,6 +46,7 @@ export default function () {
   check(getResp, {
     'status is 200': (r) => r.status === 200,
   }) || getErrorRate.add(1);
+  logIfNot200('Get Users', getResp);
 
   getTrend.add(getResp.timings.duration);
 

@@ -11,6 +11,15 @@ const postErrorRate = new Rate('Add Book error');
 const orderTrend = new Trend('Add Order');
 const orderErrorRate = new Rate('Add Order error');
 
+function logIfNot200(name, response) {
+  if (response.status === 200) {
+    return;
+  }
+  console.error(
+    `[${name}] status=${response.status} method=${response.request.method} url=${response.request.url} body=${JSON.stringify(response.body)}`
+  );
+}
+
 export let options = {
   stages: [
       { duration: "10s", target: `${__ENV.USERS}` },
@@ -63,18 +72,21 @@ export default function () {
   check(getResp, {
     'status is 200': (r) => r.status === 200,
   }) || getErrorRate.add(1);
+  logIfNot200('Get Books', getResp);
 
   getTrend.add(getResp.timings.duration);
 
   check(postResp, {
     'status is 200': (r) => r.status === 200,
   }) || postErrorRate.add(1);
+  logIfNot200('Add Book', postResp);
 
   postTrend.add(postResp.timings.duration);
 
   check(addOrderResp, {
     'status is 200': (r) => r.status === 200,
   }) || orderErrorRate.add(1);
+  logIfNot200('Add Order', addOrderResp);
 
   orderTrend.add(addOrderResp.timings.duration);
 }

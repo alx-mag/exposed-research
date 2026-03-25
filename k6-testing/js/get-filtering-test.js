@@ -1,10 +1,19 @@
 import http from 'k6/http';
-import {check} from 'k6';
+import {check, sleep} from 'k6';
 import {Trend, Rate} from 'k6/metrics';
 
 const getTrend = new Trend('GetUsersFiltering');
 const getErrorRate = new Rate('GetUsersErrorFiltering');
 const names = ['ann', 'john', 'alex', 'kate', 'mike', 'olga'];
+
+function logIfNot200(name, response) {
+    if (response.status === 200) {
+        return;
+    }
+    console.error(
+        `[${name}] status=${response.status} method=${response.request.method} url=${response.request.url} body=${JSON.stringify(response.body)}`
+    );
+}
 
 function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -47,7 +56,7 @@ export default function () {
     const requests = {
         'Get Users': {
             method: 'GET',
-            url: `${__ENV.BASE_URL}api/users/filtering?${query}`,
+            url: `${__ENV.BASE_URL}/api/users/filtering?${query}`,
             params: params,
         }
     };
@@ -58,6 +67,7 @@ export default function () {
     check(getResp, {
         'status is 200': (r) => r.status === 200,
     }) || getErrorRate.add(1);
+    logIfNot200('Get Users', getResp);
 
     getTrend.add(getResp.timings.duration);
 
