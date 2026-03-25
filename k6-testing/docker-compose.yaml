@@ -1,9 +1,7 @@
-version: '3.5'
-
 networks:
   default:
-    external:
-      name: load-testing-network
+    name: load-testing-network
+    external: true
 
 services:
 

@@ -29,7 +29,7 @@ export let options = {
 };
 
 export default function () {
-    const url = `http://nginx:4000/spring-${__ENV.TYPE}/`;
+    const sleepMs = Number(__ENV.SLEEP_MS ?? '0');
     const minAge = randomInt(18, 40);
     const maxAge = randomInt(minAge, 80);
     const query = buildQuery({
@@ -47,7 +47,7 @@ export default function () {
     const requests = {
         'Get Users': {
             method: 'GET',
-            url: `${url}api/users/filtering?${query}`,
+            url: `${__ENV.BASE_URL}api/users/filtering?${query}`,
             params: params,
         }
     };
@@ -61,4 +61,7 @@ export default function () {
 
     getTrend.add(getResp.timings.duration);
 
+    if (sleepMs > 0) {
+        sleep(sleepMs / 1000);
+    }
 }

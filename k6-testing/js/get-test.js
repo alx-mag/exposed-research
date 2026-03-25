@@ -14,7 +14,8 @@ export let options = {
 };
 
 export default function () {
-  const url = `http://nginx:4000/spring-${__ENV.TYPE}/`
+  const sleepMs = Number(__ENV.SLEEP_MS ?? '0');
+  const url = __ENV.BASE_URL
 
   const params = {
     headers: {
@@ -25,7 +26,7 @@ export default function () {
   const requests = {
       'Get Users': {
         method: 'GET',
-        url: url +'api/users',
+        url: url + '/api/users',
         params: params,
       }
     };
@@ -39,4 +40,7 @@ export default function () {
 
   getTrend.add(getResp.timings.duration);
 
+  if (sleepMs > 0) {
+    sleep(sleepMs / 1000);
+  }
 }
