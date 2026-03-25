@@ -1,7 +1,9 @@
 package org.example.exposed.research.exp.jpa.service
 
+import jakarta.persistence.criteria.Predicate
 import org.example.exposed.research.dto.CreateUserRequest
 import org.example.exposed.research.dto.UpdateUserRequest
+import org.example.exposed.research.dto.UserFilter
 import org.example.exposed.research.exp.jpa.entity.User
 import org.example.exposed.research.exp.jpa.repo.UserRepository
 import org.springframework.data.domain.Page
@@ -11,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
-class JpaUserService(private val repo: UserRepository) {
+class UserService(private val repo: UserRepository) {
 
     fun readUserExample(name: String) =
         repo.findByName(name)
@@ -21,6 +23,26 @@ class JpaUserService(private val repo: UserRepository) {
 
     fun findAll(): List<User> =
         repo.findAll()
+
+    fun findFiltering(userFilter: UserFilter): List<User> {
+        val spec = Specification<User> { root, _, cb ->
+            val predicates = mutableListOf<Predicate>()
+            userFilter.name?.let {
+                predicates += cb.like(root.get<String>("name"), "%$it%")
+            }
+            userFilter.email?.let {
+                predicates += cb.like(root.get<String>("email"), "%$it%")
+            }
+            userFilter.minAge?.let {
+                predicates += cb.greaterThanOrEqualTo(root.get("age"), it)
+            }
+            userFilter.maxAge?.let {
+                predicates += cb.lessThanOrEqualTo(root.get("age"), it)
+            }
+            cb.and(*predicates.toTypedArray())
+        }
+        return repo.findAll(spec)
+    }
 
     fun create(request: CreateUserRequest): User {
         val user = User(

@@ -13,12 +13,12 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:postgresql://127.0.0.1:58692/postgres?ApplicationName=spring-exposed [DEBUG]" group="​Exposed: dev" uuid="24639321-8935-4758-b3b9-abaa5bd07087">
+    <data-source source="LOCAL" name="jdbc:postgresql://127.0.0.1:59065/postgres?ApplicationName=spring-jpa [DEBUG]" group="​JPA: dev" uuid="bf18a297-f5a0-49c2-91d4-f9c7ab84fd6f">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://127.0.0.1:58692/postgres?ApplicationName=spring-exposed</jdbc-url>
+      <jdbc-url>jdbc:postgresql://127.0.0.1:59065/postgres?ApplicationName=spring-jpa</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
