@@ -14,6 +14,10 @@ tasks.register<Exec>("k6GetUsersFilteringExp") {
     runK6("get-filtering-test.js", EXPOSED)
 }
 
+tasks.register<Exec>("k6LoadTest-EXPOSED") {
+    runK6("load-test.js", EXPOSED)
+}
+
 tasks.register<Exec>("k6GetUsersJpa") {
     description = "Run the containerized JPA get-users test."
     runK6("get-test.js", JPA)

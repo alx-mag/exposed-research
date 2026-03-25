@@ -1,18 +1,21 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 
-const getTrend = new Trend('Get Books');
-const getErrorRate = new Rate('Get Books error');
+const getTrend = new Trend('GetUsers');
+const getErrorRate = new Rate('GetUsersError');
 
-const postTrend = new Trend('Add Book');
-const postErrorRate = new Rate('Add Book error');
+const postTrend = new Trend('AddBook');
+const postErrorRate = new Rate('AddBookError');
 
-const orderTrend = new Trend('Add Order');
-const orderErrorRate = new Rate('Add Order error');
+const createUserTrend = new Trend('AddUser');
+const createUserErrorRate = new Rate('AddUserError');
 
-function logIfNot200(name, response) {
-  if (response.status === 200) {
+const orderTrend = new Trend('AddOrder');
+const orderErrorRate = new Rate('AddOrderError');
+
+function logIfUnexpectedStatus(name, response, expectedStatus) {
+  if (response.status === expectedStatus) {
     return;
   }
   console.error(
@@ -29,7 +32,7 @@ export let options = {
 };
 
 export default function () {
-  const baseUrl = `${__ENV.BASE_URL}/`
+  const baseUrl = `${__ENV.BASE_URL}`;
 
   const params = {
     headers: {
@@ -37,56 +40,83 @@ export default function () {
     },
   };
 
+  const addUserBody = JSON.stringify({
+      name: `User ${__VU}-${__ITER}`,
+      email: `user-${__VU}-${__ITER}@example.com`,
+      age: 20 + (__ITER % 50),
+  });
+
   const addBookBody = JSON.stringify({
       author: `Author Name ${__ITER}`,
-      isbn: `${__VU}`,
-      title: `always the same title`,
-      year: 1900
+      isbn: `${__VU}-${__ITER}`,
+      title: `Book ${__VU}-${__ITER}`,
+      year: 1900 + (__ITER % 100)
   });
 
   const requests = {
-      'Get Books': {
+      'Get Users': {
         method: 'GET',
-        url: baseUrl +'api/books',
+        url: `${baseUrl}/api/users`,
         params: params,
+      },
+      'Add User': {
+        method: 'POST',
+        url: `${baseUrl}/api/users`,
+        params: params,
+        body: addUserBody,
       },
       'Add Book': {
         method: 'POST',
-        url: baseUrl+'api/books',
+        url: `${baseUrl}/api/books`,
         params: params,
         body: addBookBody,
-      },
-      'Add Order': {
-        method: 'POST',
-        url: baseUrl + 'api/orders?bookIsbn=11111111&firstName=Gaetano',
-        params: params,
-        body: null
       }
     };
 
   const responses = http.batch(requests);
-  const getResp = responses['Get Books'];
+  const getResp = responses['Get Users'];
+  const createUserResp = responses['Add User'];
   const postResp = responses['Add Book'];
-  const addOrderResp = responses['Add Order'];
 
   check(getResp, {
     'status is 200': (r) => r.status === 200,
   }) || getErrorRate.add(1);
-  logIfNot200('Get Books', getResp);
+  logIfUnexpectedStatus('Get Users', getResp, 200);
 
   getTrend.add(getResp.timings.duration);
 
   check(postResp, {
-    'status is 200': (r) => r.status === 200,
+    'status is 201': (r) => r.status === 201,
   }) || postErrorRate.add(1);
-  logIfNot200('Add Book', postResp);
+  logIfUnexpectedStatus('Add Book', postResp, 201);
 
   postTrend.add(postResp.timings.duration);
 
+  check(createUserResp, {
+    'status is 201': (r) => r.status === 201,
+  }) || createUserErrorRate.add(1);
+  logIfUnexpectedStatus('Add User', createUserResp, 201);
+
+  createUserTrend.add(createUserResp.timings.duration);
+
+  if (createUserResp.status !== 201 || postResp.status !== 201) {
+    orderErrorRate.add(1);
+    return;
+  }
+
+  const createdUser = createUserResp.json();
+  const createdBook = postResp.json();
+  const addOrderBody = JSON.stringify({
+      userId: createdUser.id,
+      bookId: createdBook.id,
+      quantity: (__ITER % 5) + 1,
+  });
+  const addOrderResp = http.post(`${baseUrl}/api/orders`, addOrderBody, params);
+
   check(addOrderResp, {
-    'status is 200': (r) => r.status === 200,
+    'status is 201': (r) => r.status === 201,
   }) || orderErrorRate.add(1);
-  logIfNot200('Add Order', addOrderResp);
+  logIfUnexpectedStatus('Add Order', addOrderResp, 201);
 
   orderTrend.add(addOrderResp.timings.duration);
 }
