@@ -23,6 +23,34 @@ val prepareDb by tasks.register<Exec>("prepareDb") {
     )
 }
 
+tasks.register<Exec>("deploySpringExposed") {
+    dependsOn(":spring-exposed:bootBuildImage")
+    group = "deploy"
+    description = "Build the spring-exposed image and recreate the spring-exposed container."
+    recreateComposeService("spring-exposed")
+}
+
+tasks.register<Exec>("deploySpringJpa") {
+    dependsOn(":spring-jpa:bootBuildImage")
+    group = "deploy"
+    description = "Build the spring-jpa image and recreate the spring-exposed container."
+    recreateComposeService("spring-jpa")
+}
+
+fun Exec.recreateComposeService(service: String) {
+    commandLine(
+        "docker",
+        "compose",
+        "-f",
+        "deployment/docker-compose.yaml",
+        "up",
+        "-d",
+        "--force-recreate",
+        "--no-deps",
+        service
+    )
+}
+
 /// Exposed ///
 tasks.register<Exec>("k6-GetUsers-Exposed") {
     dependsOn(prepareDb)
@@ -48,6 +76,11 @@ tasks.register<Exec>("k6GetUsersJpa") {
 tasks.register<Exec>("k6GetUsersFilteringJpa") {
     dependsOn(prepareDb)
     runK6("get-filtering-test.js", JPA)
+}
+
+tasks.register<Exec>("k6-LoadTest-JPA") {
+    dependsOn(prepareDb)
+    runK6("load-test.js", JPA)
 }
 
 /// Common ///
