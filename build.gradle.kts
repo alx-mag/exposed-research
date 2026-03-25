@@ -19,7 +19,6 @@ val k6SleepMs = providers.gradleProperty("sleepMs").orElse("0")
 val k6BaseUrl = providers.gradleProperty("baseUrl")
 
 tasks.register<K6ExecTask>("k6ExposedGetUsers") {
-    group = "k6"
     description = "Run the containerized Exposed get-users test."
     workingDirectory.set(k6TestingDir)
     script.convention("get-test.js")
@@ -29,7 +28,6 @@ tasks.register<K6ExecTask>("k6ExposedGetUsers") {
 }
 
 tasks.register<K6ExecTask>("k6ExposedFiltering") {
-    group = "k6"
     description = "Run the containerized Exposed filtering test."
     workingDirectory.set(k6TestingDir)
     script.convention("get-filtering-test.js")
@@ -39,7 +37,6 @@ tasks.register<K6ExecTask>("k6ExposedFiltering") {
 }
 
 tasks.register<K6ExecTask>("k6JpaGetUsers") {
-    group = "k6"
     description = "Run the containerized JPA get-users test."
     workingDirectory.set(k6TestingDir)
     script.convention("get-test.js")
@@ -49,7 +46,6 @@ tasks.register<K6ExecTask>("k6JpaGetUsers") {
 }
 
 tasks.register<K6ExecTask>("k6JpaFiltering") {
-    group = "k6"
     description = "Run the containerized JPA filtering test."
     workingDirectory.set(k6TestingDir)
     script.convention("get-filtering-test.js")

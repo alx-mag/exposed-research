@@ -16,6 +16,11 @@ import javax.inject.Inject
 abstract class K6ExecTask @Inject constructor(
     private val execOperations: ExecOperations
 ) : DefaultTask() {
+
+    init {
+        group = "k6"
+    }
+
     @get:Optional
     @get:Input
     abstract val script: Property<String>
