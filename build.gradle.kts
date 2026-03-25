@@ -4,20 +4,22 @@ import Service.JPA
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 
-tasks.register<Exec>("k6GetUsersExp") {
+/// Exposed ///
+tasks.register<Exec>("k6-GetUsers-Exposed") {
     description = "Run the containerized Exposed get-users test."
     runK6("get-test.js", EXPOSED)
 }
 
-tasks.register<Exec>("k6GetUsersFilteringExp") {
+tasks.register<Exec>("k6-GetUsersFiltering-Exposed") {
     description = "Run the containerized Exposed filtering test."
     runK6("get-filtering-test.js", EXPOSED)
 }
 
-tasks.register<Exec>("k6LoadTest-EXPOSED") {
+tasks.register<Exec>("k6-LoadTest-Exposed") {
     runK6("load-test.js", EXPOSED)
 }
 
+/// JPA ///
 tasks.register<Exec>("k6GetUsersJpa") {
     description = "Run the containerized JPA get-users test."
     runK6("get-test.js", JPA)
@@ -28,6 +30,7 @@ tasks.register<Exec>("k6GetUsersFilteringJpa") {
     runK6("get-filtering-test.js", JPA)
 }
 
+/// Common ///
 fun Exec.runK6(scriptName: String, baseUrl: String) {
     fun MutableList<String>.addEnv(name: String, value: Any) {
         add("-e")

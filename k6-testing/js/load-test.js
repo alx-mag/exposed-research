@@ -8,9 +8,6 @@ const getErrorRate = new Rate('GetUsersError');
 const postTrend = new Trend('AddBook');
 const postErrorRate = new Rate('AddBookError');
 
-const createUserTrend = new Trend('AddUser');
-const createUserErrorRate = new Rate('AddUserError');
-
 const orderTrend = new Trend('AddOrder');
 const orderErrorRate = new Rate('AddOrderError');
 
@@ -23,6 +20,7 @@ function logIfUnexpectedStatus(name, response, expectedStatus) {
   );
 }
 
+// noinspection JSUnusedGlobalSymbols
 export let options = {
   stages: [
       { duration: "10s", target: `${__ENV.USERS}` },
@@ -31,6 +29,7 @@ export let options = {
   ]
 };
 
+// noinspection JSUnusedGlobalSymbols
 export default function () {
   const baseUrl = `${__ENV.BASE_URL}`;
 
@@ -39,12 +38,6 @@ export default function () {
       'Content-Type': 'application/json',
     },
   };
-
-  const addUserBody = JSON.stringify({
-      name: `User ${__VU}-${__ITER}`,
-      email: `user-${__VU}-${__ITER}@example.com`,
-      age: 20 + (__ITER % 50),
-  });
 
   const addBookBody = JSON.stringify({
       author: `Author Name ${__ITER}`,
@@ -59,12 +52,6 @@ export default function () {
         url: `${baseUrl}/api/users`,
         params: params,
       },
-      'Add User': {
-        method: 'POST',
-        url: `${baseUrl}/api/users`,
-        params: params,
-        body: addUserBody,
-      },
       'Add Book': {
         method: 'POST',
         url: `${baseUrl}/api/books`,
@@ -75,7 +62,6 @@ export default function () {
 
   const responses = http.batch(requests);
   const getResp = responses['Get Users'];
-  const createUserResp = responses['Add User'];
   const postResp = responses['Add Book'];
 
   check(getResp, {
@@ -92,22 +78,28 @@ export default function () {
 
   postTrend.add(postResp.timings.duration);
 
-  check(createUserResp, {
-    'status is 201': (r) => r.status === 201,
-  }) || createUserErrorRate.add(1);
-  logIfUnexpectedStatus('Add User', createUserResp, 201);
-
-  createUserTrend.add(createUserResp.timings.duration);
-
-  if (createUserResp.status !== 201 || postResp.status !== 201) {
+  if (getResp.status !== 200 || postResp.status !== 201) {
     orderErrorRate.add(1);
     return;
   }
 
-  const createdUser = createUserResp.json();
+  const users = getResp.json();
+  if (!Array.isArray(users) || users.length === 0) {
+    orderErrorRate.add(1);
+    console.error(`[Add Order] no users available from GET ${baseUrl}/api/users`);
+    return;
+  }
+
+  const randomUser = users[Math.floor(Math.random() * users.length)];
+  if (!randomUser || randomUser.id === undefined || randomUser.id === null) {
+    orderErrorRate.add(1);
+    console.error(`[Add Order] invalid user payload from GET ${baseUrl}/api/users: ${JSON.stringify(randomUser)}`);
+    return;
+  }
+
   const createdBook = postResp.json();
   const addOrderBody = JSON.stringify({
-      userId: createdUser.id,
+      userId: randomUser.id,
       bookId: createdBook.id,
       quantity: (__ITER % 5) + 1,
   });
