@@ -1,53 +1,30 @@
-import buildsrc.tasks.K6ExecTask
+import Service.EXPOSED
+import Service.JPA
 
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 
-object Service {
-    const val EXPOSED = "http://nginx:4000/spring-exposed"
-    const val JPA = "http://nginx:4000/spring-jpa"
-
-    const val EXPOSED_LOCAL = "http://localhost:9081"
-    const val JPA_LOCAL = "http://localhost:9082"
-}
-
-tasks.register<K6ExecTask>("k6GetUsersExp") {
+tasks.register<Exec>("k6GetUsersExp") {
     description = "Run the containerized Exposed get-users test."
-    script = "get-test.js"
-    users = 20
-    sleepMs = 0
-    baseUrl = Service.EXPOSED
+    runK6("get-test.js", EXPOSED)
 }
 
-tasks.register<K6ExecTask>("k6GetUsersFilteringExp") {
+tasks.register<Exec>("k6GetUsersFilteringExp") {
     description = "Run the containerized Exposed filtering test."
-    script = "get-filtering-test.js"
-    users = 20
-    sleepMs = 0
-    baseUrl = Service.EXPOSED
+    runK6("get-filtering-test.js", EXPOSED)
 }
 
-tasks.register<K6ExecTask>("k6GetUsersJpa") {
+tasks.register<Exec>("k6GetUsersJpa") {
     description = "Run the containerized JPA get-users test."
-    script = "get-test.js"
-    users = 20
-    sleepMs = 0
-    baseUrl = Service.JPA
+    runK6("get-test.js", JPA)
 }
 
-tasks.register<K6ExecTask>("k6GetUsersFilteringJpa") {
+tasks.register<Exec>("k6GetUsersFilteringJpa") {
     description = "Run the containerized JPA filtering test."
-    script = "get-filtering-test.js"
-    users = 20
-    sleepMs = 0
-    baseUrl = Service.JPA
+    runK6("get-filtering-test.js", JPA)
 }
 
-tasks.register<Exec>("a") {
-    runScript("get-filtering-test.js", Service.JPA)
-}
-
-fun Exec.runScript(scriptName: String, baseUrl: String) {
+fun Exec.runK6(scriptName: String, baseUrl: String) {
     fun MutableList<String>.addEnv(name: String, value: Any) {
         add("-e")
         add("$name=$value")
@@ -70,4 +47,12 @@ fun Exec.runScript(scriptName: String, baseUrl: String) {
         "/k6-scripts/$scriptName"
     )
     commandLine = command
+}
+
+object Service {
+    const val EXPOSED = "http://nginx:4000/spring-exposed"
+    const val JPA = "http://nginx:4000/spring-jpa"
+
+    const val EXPOSED_LOCAL = "http://localhost:9081"
+    const val JPA_LOCAL = "http://localhost:9082"
 }

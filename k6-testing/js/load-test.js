@@ -29,7 +29,7 @@ export let options = {
 };
 
 export default function () {
-  const url = `http://nginx:4000/spring-${__ENV.TYPE}/`
+  const baseUrl = `${__ENV.BASE_URL}/`
 
   const params = {
     headers: {
@@ -47,18 +47,18 @@ export default function () {
   const requests = {
       'Get Books': {
         method: 'GET',
-        url: url +'books',
+        url: baseUrl +'api/books',
         params: params,
       },
       'Add Book': {
         method: 'POST',
-        url: url+'books',
+        url: baseUrl+'api/books',
         params: params,
         body: addBookBody,
       },
       'Add Order': {
         method: 'POST',
-        url: url + 'orders?bookIsbn=11111111&firstName=Gaetano',
+        url: baseUrl + 'api/orders?bookIsbn=11111111&firstName=Gaetano',
         params: params,
         body: null
       }
