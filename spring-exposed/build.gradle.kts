@@ -1,3 +1,6 @@
+import buildsrc.Service
+import buildsrc.recreateComposeService
+import buildsrc.runK6
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
@@ -31,6 +34,28 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.register<Exec>("deployContainer") {
+    dependsOn("bootBuildImage")
+    group = "deploy"
+    description = "Build the spring-exposed image and recreate the spring-exposed container."
+    recreateComposeService("spring-exposed")
+}
+
+tasks.register<Exec>("k6-GetUsers") {
+    dependsOn(":prepareDb")
+    runK6("get-test.js", Service.EXPOSED)
+}
+
+tasks.register<Exec>("k6-GetUsersFiltering") {
+    dependsOn(":prepareDb")
+    runK6("get-filtering-test.js", Service.EXPOSED)
+}
+
+tasks.register<Exec>("k6-LoadTest") {
+    dependsOn(":prepareDb")
+    runK6("load-test.js", Service.EXPOSED)
 }
 
 tasks.withType<BootBuildImage> {

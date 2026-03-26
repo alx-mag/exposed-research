@@ -1,3 +1,6 @@
+import buildsrc.Service
+import buildsrc.recreateComposeService
+import buildsrc.runK6
 import org.gradle.kotlin.dsl.withType
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
@@ -37,6 +40,28 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+tasks.register<Exec>("deployContainer") {
+    dependsOn("bootBuildImage")
+    group = "deploy"
+    description = "Build the spring-jpa image and recreate the spring-jpa container."
+    recreateComposeService("spring-jpa")
+}
+
+tasks.register<Exec>("k6-GetUsers") {
+    dependsOn(":prepareDb")
+    runK6("get-test.js", Service.JPA)
+}
+
+tasks.register<Exec>("k6-GetUsersFiltering") {
+    dependsOn(":prepareDb")
+    runK6("get-filtering-test.js", Service.JPA)
+}
+
+tasks.register<Exec>("k6-LoadTest") {
+    dependsOn(":prepareDb")
+    runK6("load-test.js", Service.JPA)
 }
 
 tasks.withType<BootBuildImage> {
