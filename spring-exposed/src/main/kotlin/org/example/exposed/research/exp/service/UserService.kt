@@ -13,6 +13,7 @@ import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.dao.with
 import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.springframework.stereotype.Service
@@ -49,6 +50,15 @@ class UserService {
     @Transactional(readOnly = true)
     fun findAll(): List<User> =
         User.all().toList()
+
+    @Transactional(readOnly = true)
+    fun findAllRich(): List<User> {
+        return User.all().with(
+            User::city,
+            User::profile,
+            User::roles
+        ).toList()
+    }
 
     @Transactional(readOnly = true)
     fun findFiltering(userFilter: UserFilter): List<UserResponse> {

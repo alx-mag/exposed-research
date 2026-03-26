@@ -11,6 +11,16 @@ data class UserResponse(
     val age: Int
 )
 
+data class UserRichResponse(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val age: Int,
+    val roles: Set<String>,
+    val city: String?,
+    val profileBio: String?,
+)
+
 data class UserFilter(
     val name: String? = null,
     val email: String? = null,

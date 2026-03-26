@@ -97,11 +97,34 @@ class BookOrderControllerTests {
         assertThat(response.body()).containsPattern("\"id\":\\d+")
     }
 
+    @Test
+    fun `get rich users returns enriched response`() {
+        val response = get("/api/users/rich")
+
+        assertThat(response.statusCode()).isEqualTo(200)
+        assertThat(response.body()).contains("\"id\":1")
+        assertThat(response.body()).contains("\"name\":\"User 1\"")
+        assertThat(response.body()).contains("\"email\":\"user1@example.com\"")
+        assertThat(response.body()).contains("\"age\":19")
+        assertThat(response.body()).contains("\"roles\":[\"USER\"]")
+        assertThat(response.body()).contains("\"city\":\"Samara\"")
+        assertThat(response.body()).contains("\"profileBio\":\"Bio for mock user #1\"")
+    }
+
     private fun postJson(path: String, body: String): HttpResponse<String> {
         val request = HttpRequest.newBuilder()
             .uri(URI("http://localhost:$port$path"))
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(body))
+            .build()
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString())
+    }
+
+    private fun get(path: String): HttpResponse<String> {
+        val request = HttpRequest.newBuilder()
+            .uri(URI("http://localhost:$port$path"))
+            .GET()
             .build()
 
         return client.send(request, HttpResponse.BodyHandlers.ofString())
