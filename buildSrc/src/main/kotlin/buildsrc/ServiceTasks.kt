@@ -23,7 +23,7 @@ fun Exec.runK6(scriptName: String, baseUrl: String) {
         "--rm"
     )
     command.addEnv("USERS", 20)
-    command.addEnv("SLEEP_MS", 50)
+    command.addEnv("SLEEP_MS", 0)
     command.addEnv("BASE_URL", baseUrl)
     command += listOf(
         "k6",
