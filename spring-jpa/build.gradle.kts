@@ -13,6 +13,8 @@ group = "org.example"
 version = "0.0.1-SNAPSHOT"
 description = "spring-jpa"
 
+val prepareDb by rootProject.tasks.named<Exec>("prepareDb")
+
 dependencies {
     implementation(project(":utils"))
 
@@ -50,17 +52,17 @@ tasks.register<Exec>("deployContainer") {
 }
 
 tasks.register<Exec>("k6-GetUsers") {
-    dependsOn(":prepareDb")
+    dependsOn(prepareDb)
     runK6("get-test.js", Service.JPA)
 }
 
 tasks.register<Exec>("k6-GetUsersFiltering") {
-    dependsOn(":prepareDb")
+    dependsOn(prepareDb)
     runK6("get-filtering-test.js", Service.JPA)
 }
 
 tasks.register<Exec>("k6-LoadTest") {
-    dependsOn(":prepareDb")
+    dependsOn(prepareDb)
     runK6("load-test.js", Service.JPA)
 }
 

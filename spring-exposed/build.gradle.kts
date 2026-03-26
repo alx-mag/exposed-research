@@ -11,6 +11,8 @@ group = "org.example"
 version = "0.0.1-SNAPSHOT"
 description = "spring-exposed"
 
+val prepareDb = rootProject.tasks.named<Exec>("prepareDb")
+
 dependencies {
     implementation(project(":utils"))
 
@@ -43,18 +45,18 @@ tasks.register<Exec>("deployContainer") {
     recreateComposeService("spring-exposed")
 }
 
-tasks.register<Exec>("k6-GetUsers") {
-    dependsOn(":prepareDb")
+tasks.register<Exec>("k6-GetUsers-A") {
+    dependsOn(prepareDb)
     runK6("get-test.js", Service.EXPOSED)
 }
 
 tasks.register<Exec>("k6-GetUsersFiltering") {
-    dependsOn(":prepareDb")
+    dependsOn(prepareDb)
     runK6("get-filtering-test.js", Service.EXPOSED)
 }
 
 tasks.register<Exec>("k6-LoadTest") {
-    dependsOn(":prepareDb")
+    dependsOn(prepareDb)
     runK6("load-test.js", Service.EXPOSED)
 }
 
