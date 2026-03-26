@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/users")
 class UserController(private val users: UserService) {
 
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createUser(@RequestBody request: CreateUserRequest): UserResponse {
         return users.create(request)

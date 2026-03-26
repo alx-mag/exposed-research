@@ -6,13 +6,7 @@ import org.example.exposed.research.dto.UserFilter
 import org.example.exposed.research.dto.UserResponse
 import org.example.exposed.research.exp.entity.*
 import org.example.exposed.research.exp.mapper.toResponse
-import org.jetbrains.exposed.v1.core.SortOrder
-import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.greater
-import org.jetbrains.exposed.v1.core.greaterEq
-import org.jetbrains.exposed.v1.core.lessEq
-import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.dao.with
 import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -53,11 +47,12 @@ class UserService {
 
     @Transactional(readOnly = true)
     fun findAllRich(): List<User> {
-        return User.all().with(
+        val users = User.all().with(
             User::city,
             User::profile,
             User::roles
-        ).toList()
+        )
+        return users.toList()
     }
 
     @Transactional(readOnly = true)
