@@ -45,18 +45,27 @@ tasks.register<Exec>("deployContainer") {
     recreateComposeService("spring-exposed")
 }
 
-tasks.register<Exec>("k6-GetUsers-A") {
+tasks.register<Exec>("k6-GetUsers") {
     dependsOn(prepareDb)
+    group = "k6"
     runK6("get-test.js", Service.EXPOSED)
+}
+
+tasks.register<Exec>("k6-GetRichUsers") {
+    dependsOn(prepareDb)
+    group = "k6"
+    runK6("get-rich-test.js", Service.EXPOSED)
 }
 
 tasks.register<Exec>("k6-GetUsersFiltering") {
     dependsOn(prepareDb)
+    group = "k6"
     runK6("get-filtering-test.js", Service.EXPOSED)
 }
 
 tasks.register<Exec>("k6-LoadTest") {
     dependsOn(prepareDb)
+    group = "k6"
     runK6("load-test.js", Service.EXPOSED)
 }
 
