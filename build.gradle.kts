@@ -23,6 +23,7 @@ val prepareDb by tasks.register<Exec>("prepareDb") {
     )
 }
 
+/// Exposed ///
 tasks.register<Exec>("deploySpringExposed") {
     dependsOn(":spring-exposed:bootBuildImage")
     group = "deploy"
@@ -30,28 +31,6 @@ tasks.register<Exec>("deploySpringExposed") {
     recreateComposeService("spring-exposed")
 }
 
-tasks.register<Exec>("deploySpringJpa") {
-    dependsOn(":spring-jpa:bootBuildImage")
-    group = "deploy"
-    description = "Build the spring-jpa image and recreate the spring-exposed container."
-    recreateComposeService("spring-jpa")
-}
-
-fun Exec.recreateComposeService(service: String) {
-    commandLine(
-        "docker",
-        "compose",
-        "-f",
-        "deployment/docker-compose.yaml",
-        "up",
-        "-d",
-        "--force-recreate",
-        "--no-deps",
-        service
-    )
-}
-
-/// Exposed ///
 tasks.register<Exec>("k6-GetUsers-Exposed") {
     dependsOn(prepareDb)
     runK6("get-test.js", EXPOSED)
@@ -68,6 +47,13 @@ tasks.register<Exec>("k6-LoadTest-Exposed") {
 }
 
 /// JPA ///
+tasks.register<Exec>("deploySpringJpa") {
+    dependsOn(":spring-jpa:bootBuildImage")
+    group = "deploy"
+    description = "Build the spring-jpa image and recreate the spring-exposed container."
+    recreateComposeService("spring-jpa")
+}
+
 tasks.register<Exec>("k6GetUsersJpa") {
     dependsOn(prepareDb)
     runK6("get-test.js", JPA)
@@ -107,6 +93,20 @@ fun Exec.runK6(scriptName: String, baseUrl: String) {
         "/k6-scripts/$scriptName"
     )
     commandLine = command
+}
+
+fun Exec.recreateComposeService(service: String) {
+    commandLine(
+        "docker",
+        "compose",
+        "-f",
+        "deployment/docker-compose.yaml",
+        "up",
+        "-d",
+        "--force-recreate",
+        "--no-deps",
+        service
+    )
 }
 
 object Service {
