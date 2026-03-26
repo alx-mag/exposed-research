@@ -31,6 +31,7 @@ create table users
             references cities
             on update restrict on delete restrict,
     profile_id integer
+        constraint uq_users_profile_id unique
         constraint fk_users_profile_id__id
             references profiles
             on update restrict on delete restrict
