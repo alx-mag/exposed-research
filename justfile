@@ -1,11 +1,14 @@
 #!/usr/bin/env just --justfile
 
+default:
+  @just -l
+
 users:
   ./gradlew :spring-exposed:k6-GetUsers
-  just wait
+  just _wait
   ./gradlew :spring-jpa:k6-GetUsers
 
-wait:
+_wait:
   echo 'Wait for 10s...'
   sleep 10s
   echo 'Continue'
