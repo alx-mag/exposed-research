@@ -1,4 +1,5 @@
 import buildsrc.Service
+import buildsrc.convention.buildsrc.K6Test
 import buildsrc.recreateComposeService
 import buildsrc.runK6
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
@@ -45,10 +46,16 @@ tasks.register<Exec>("deployContainer") {
     recreateComposeService("spring-exposed")
 }
 
-tasks.register<Exec>("k6-GetUsers") {
+tasks.register<Exec>(K6Test.GET_USERS) {
     dependsOn(prepareDb)
     group = "k6"
     runK6("get-test.js", Service.EXPOSED)
+}
+
+tasks.register<Exec>(K6Test.GET_USERS_FILTERING) {
+    dependsOn(prepareDb)
+    group = "k6"
+    runK6("get-filtering-test.js", Service.EXPOSED)
 }
 
 tasks.register<Exec>("k6-GetRichUsers") {
@@ -57,13 +64,7 @@ tasks.register<Exec>("k6-GetRichUsers") {
     runK6("get-rich-test.js", Service.EXPOSED)
 }
 
-tasks.register<Exec>("k6-GetUsersFiltering") {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-filtering-test.js", Service.EXPOSED)
-}
-
-tasks.register<Exec>("k6-LoadTest") {
+tasks.register<Exec>(K6Test.LOAD) {
     dependsOn(prepareDb)
     group = "k6"
     runK6("load-test.js", Service.EXPOSED)
