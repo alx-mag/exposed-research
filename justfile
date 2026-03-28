@@ -22,11 +22,11 @@ k6-test name *args:
   just _wait; \
   ./gradlew :spring-jpa:k6-{{name}} {{args}}; \
   end="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
+  url="http://localhost:3001/d/g6zdg6/k6-load-testing-results-copy?orgId=1&from=$start&to=$end&timezone=browser&var-Measurement=\$__all"; \
+  mkdir -p logs; \
+  printf '"%s","%s","%s"\n' "{{name}}" "$start" "$url" >> logs/k6-tests.csv; \
   echo Results:; \
-  just _dahboard-url "$start" "$end"
+  echo "$url"
 
 _wait t="10s":
   sleep {{t}}
-
-_dahboard-url from to:
-  @echo "http://localhost:3001/d/g6zdg6/k6-load-testing-results-copy?orgId=1&from={{from}}&to={{to}}&timezone=browser&var-Measurement=\$__all"
