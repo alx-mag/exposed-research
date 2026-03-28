@@ -41,3 +41,13 @@ select u.id,
 from users u
 where u.email like 'user%@example.com'
   and u.id % 5 = 0;
+
+insert into users_copy(id, name, email, age, city_id, profile_id)
+select id, name, email, age, city_id, profile_id
+from users;
+
+select setval(
+    'users_copy_id_seq',
+    coalesce((select max(id) from users_copy), 1),
+    true
+);

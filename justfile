@@ -16,6 +16,10 @@ load:
 rs service:
   docker compose -f deployment/docker-compose.yaml restart {{service}}
 
+#Recreate service in docker compose
+rc service:
+  docker compose -f deployment/docker-compose.yaml up -d --force-recreate {{service}}
+
 k6-test name *args:
   start="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
   ./gradlew :spring-exposed:k6-{{name}} {{args}}; \
