@@ -1,5 +1,7 @@
 #!/usr/bin/env just --justfile
 
+compose_file := 'deployment/docker-compose.yaml'
+
 default:
   @just -l
 
@@ -14,11 +16,16 @@ load:
 
 #Restrart service in docker compose
 rs service:
-  docker compose -f deployment/docker-compose.yaml restart {{service}}
+  docker compose -f {{compose_file}} restart {{service}}
 
 #Recreate service in docker compose
 rc service:
-  docker compose -f deployment/docker-compose.yaml up -d --force-recreate {{service}}
+  docker compose -f {{compose_file}} up -d --force-recreate {{service}}
+
+rmup service:
+  docker compose -f {{compose_file}} stop {{service}} || true
+  docker compose -f {{compose_file}} rm -fsv {{service}}
+  docker compose -f {{compose_file}} up -d --force-recreate {{service}}
 
 k6-test name *args:
   start="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
