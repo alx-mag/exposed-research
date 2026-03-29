@@ -24,6 +24,9 @@ class UserService(private val repo: UserRepository) {
     fun findAll(): List<User> =
         repo.findAll()
 
+    fun findAllRich(): List<User> =
+        repo.findAllWithRelations()
+
     fun findFiltering(userFilter: UserFilter): List<User> {
         val spec = Specification<User> { root, _, cb ->
             val predicates = mutableListOf<Predicate>()

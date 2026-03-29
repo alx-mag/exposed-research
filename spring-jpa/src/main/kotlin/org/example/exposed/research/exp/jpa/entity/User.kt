@@ -13,8 +13,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
-// Section 4.6 — JPA User entity with all relationship types
-// Named JpaUser to avoid clash with Exposed's User class in the same compilation
 @Entity(name = "JpaUser")
 @Table(name = "users")
 class User(
@@ -44,6 +42,6 @@ class User(
     )
     var roles: MutableList<Role> = mutableListOf(),
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     var orders: MutableList<Order> = mutableListOf()
 )

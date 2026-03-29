@@ -4,7 +4,9 @@ import org.example.exposed.research.dto.CreateUserRequest
 import org.example.exposed.research.dto.UpdateUserRequest
 import org.example.exposed.research.dto.UserFilter
 import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.dto.UserRichResponse
 import org.example.exposed.research.exp.jpa.mapper.toResponse
+import org.example.exposed.research.exp.jpa.mapper.toRichResponse
 import org.example.exposed.research.exp.jpa.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -30,6 +32,11 @@ class UserController(private val users: UserService) {
     @GetMapping
     fun getUsers(): List<UserResponse> {
         return users.findAll().map { it.toResponse() }
+    }
+
+    @GetMapping("/rich")
+    fun getUsersRich(): List<UserRichResponse> {
+        return users.findAllRich().map { it.toRichResponse() }
     }
 
     @GetMapping("/filtering")
