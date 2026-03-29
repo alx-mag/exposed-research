@@ -38,6 +38,10 @@ dep-jpa:
   ./gradlew :spring-jpa:bootBuildImage
   docker compose -f {{compose_file}} up -d --force-recreate --no-deps spring-jpa
 
+# Execute db/clear-data.sql against the running db-service PostgreSQL container.
+prepare-db:
+  cat db/clear-data.sql | docker exec -i db-service psql -U postgres -d postgres
+
 k6-test name *args:
   start="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
   ./gradlew :spring-exposed:k6-{{name}} {{args}}; \
