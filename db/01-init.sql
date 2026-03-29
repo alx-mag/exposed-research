@@ -37,28 +37,6 @@ create table users
             on update restrict on delete restrict
 );
 
-create sequence users_copy_id_seq;
-
-create table users_copy
-(
-    id         integer default nextval('users_copy_id_seq')
-        primary key,
-    name       varchar(255)                               not null,
-    email      varchar(255) default ''::character varying not null,
-    age        integer      default 0                     not null,
-    city_id    integer
-        constraint fk_users_copy_city_id__id
-            references cities
-            on update restrict on delete restrict,
-    profile_id integer
-        constraint uq_users_copy_profile_id unique
-        constraint fk_users_copy_profile_id__id
-            references profiles
-            on update restrict on delete restrict
-);
-
-alter sequence users_copy_id_seq owned by users_copy.id;
-
 create table userroles
 (
     user_id integer not null
