@@ -3,6 +3,7 @@ import buildsrc.convention.buildsrc.K6Test
 import buildsrc.recreateComposeService
 import buildsrc.runK6
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+import java.time.Instant
 
 plugins {
     id("buildsrc.convention.kotlin-jvm")
@@ -58,7 +59,7 @@ tasks.register<Exec>(K6Test.GET_USERS_FILTERING) {
     runK6("get-filtering-test.js", Service.EXPOSED)
 }
 
-tasks.register<Exec>("k6-GetRichUsers") {
+tasks.register<Exec>(K6Test.GET_RICH_USERS) {
     dependsOn(prepareDb)
     group = "k6"
     runK6("get-rich-test.js", Service.EXPOSED)
@@ -72,4 +73,5 @@ tasks.register<Exec>(K6Test.LOAD) {
 
 tasks.withType<BootBuildImage> {
     imageName.set("alx-mag/${rootProject.name}-${project.name}")
+    environment.put("BP_IMAGE_LABELS", "org.example.build-time=${Instant.now()}")
 }

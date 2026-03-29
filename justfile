@@ -8,6 +8,9 @@ default:
 users:
   @just k6-test GetUsers
 
+rich-users:
+  @just k6-test GetRichUsers
+
 users-filtering:
   @just k6-test GetUsersFiltering
 
@@ -26,6 +29,14 @@ rmup service:
   docker compose -f {{compose_file}} stop {{service}} || true
   docker compose -f {{compose_file}} rm -fsv {{service}}
   docker compose -f {{compose_file}} up -d --force-recreate {{service}}
+
+dep-exp:
+  ./gradlew :spring-exposed:bootBuildImage
+  docker compose -f {{compose_file}} up -d --force-recreate --no-deps spring-exposed
+
+dep-jpa:
+  ./gradlew :spring-jpa:bootBuildImage
+  docker compose -f {{compose_file}} up -d --force-recreate --no-deps spring-jpa
 
 k6-test name *args:
   start="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
