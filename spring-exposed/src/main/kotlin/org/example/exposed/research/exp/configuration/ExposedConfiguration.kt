@@ -9,6 +9,6 @@ class ExposedConfiguration {
 
     @Bean
     fun databaseConfig() = DatabaseConfig {
-        keepLoadedReferencesOutOfTransaction = true
+        // keepLoadedReferencesOutOfTransaction = true
     }
 }

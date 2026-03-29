@@ -4,8 +4,10 @@ import org.example.exposed.research.dto.CreateUserRequest
 import org.example.exposed.research.dto.UpdateUserRequest
 import org.example.exposed.research.dto.UserFilter
 import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.dto.UserRichResponse
 import org.example.exposed.research.exp.entity.*
 import org.example.exposed.research.exp.mapper.toResponse
+import org.example.exposed.research.exp.mapper.toRichResponse
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.dao.with
 import org.jetbrains.exposed.v1.jdbc.andWhere
@@ -46,13 +48,13 @@ class UserService {
         User.all().toList()
 
     @Transactional(readOnly = true)
-    fun findAllRich(): List<User> {
+    fun findAllRich(): List<UserRichResponse> {
         val users = User.all().with(
             User::city,
             User::profile,
             User::roles
         )
-        return users.toList()
+        return users.map { it.toRichResponse() }
     }
 
     @Transactional(readOnly = true)

@@ -1,12 +1,7 @@
 package org.example.exposed.research.exp.controller
 
-import org.example.exposed.research.dto.CreateUserRequest
-import org.example.exposed.research.dto.UpdateUserRequest
-import org.example.exposed.research.dto.UserFilter
-import org.example.exposed.research.dto.UserResponse
-import org.example.exposed.research.dto.UserRichResponse
+import org.example.exposed.research.dto.*
 import org.example.exposed.research.exp.mapper.toResponse
-import org.example.exposed.research.exp.mapper.toRichResponse
 import org.example.exposed.research.exp.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -36,7 +31,7 @@ class UserController(private val users: UserService) {
 
     @GetMapping("/rich")
     fun getUsersRich(): List<UserRichResponse> {
-        return users.findAllRich().map { it.toRichResponse() }
+        return users.findAllRich()
     }
 
     @GetMapping("/filtering")

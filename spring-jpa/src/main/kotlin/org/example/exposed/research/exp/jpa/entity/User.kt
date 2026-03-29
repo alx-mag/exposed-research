@@ -40,8 +40,8 @@ class User(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role_id")]
     )
-    var roles: MutableList<Role> = mutableListOf(),
+    var roles: MutableSet<Role> = mutableSetOf(),
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    var orders: MutableList<Order> = mutableListOf()
+    var orders: MutableSet<Order> = mutableSetOf()
 )
