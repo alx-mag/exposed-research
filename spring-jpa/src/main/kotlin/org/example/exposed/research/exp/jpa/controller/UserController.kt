@@ -34,9 +34,19 @@ class UserController(private val users: UserService) {
         return users.findAll().map { it.toResponse() }
     }
 
+    @GetMapping("/sql")
+    fun getUsersSql(): List<UserResponse> {
+        return users.findAllNative()
+    }
+
     @GetMapping("/rich")
     fun getUsersRich(): List<UserRichResponse> {
         return users.findAllRich().map { it.toRichResponse() }
+    }
+
+    @GetMapping("/rich/sql")
+    fun getUsersRichSql(): List<UserRichResponse> {
+        return users.findAllRichNative()
     }
 
     @GetMapping("/filtering")

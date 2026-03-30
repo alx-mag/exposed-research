@@ -1,9 +1,13 @@
 package org.example.exposed.research.exp.jpa.service
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import jakarta.persistence.criteria.Predicate
 import org.example.exposed.research.dto.CreateUserRequest
 import org.example.exposed.research.dto.UpdateUserRequest
 import org.example.exposed.research.dto.UserFilter
+import org.example.exposed.research.dto.UserResponse
+import org.example.exposed.research.dto.UserRichResponse
 import org.example.exposed.research.exp.jpa.entity.User
 import org.example.exposed.research.exp.jpa.repo.UserRepository
 import org.springframework.data.domain.Page
@@ -11,9 +15,12 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(private val repo: UserRepository) {
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     fun readUserExample(name: String) =
         repo.findByName(name)
@@ -24,8 +31,69 @@ class UserService(private val repo: UserRepository) {
     fun findAll(): List<User> =
         repo.findAll()
 
+    @Transactional(readOnly = true)
+    fun findAllNative(): List<UserResponse> =
+        entityManager.createNativeQuery(
+            """
+            select u.id, u.name, u.email, u.age
+            from users u
+            order by u.id
+            """.trimIndent()
+        )
+            .resultList
+            .map { row -> row as Array<*> }
+            .map { row ->
+                UserResponse(
+                    id = (row[0] as Number).toInt(),
+                    name = row[1] as String,
+                    email = row[2] as String,
+                    age = (row[3] as Number).toInt()
+                )
+            }
+
     fun findAllRich(): List<User> =
         repo.findAllWithRelations()
+
+    @Transactional(readOnly = true)
+    fun findAllRichNative(): List<UserRichResponse> {
+        val rows = entityManager.createNativeQuery(
+            """
+            select u.id,
+                   u.name,
+                   u.email,
+                   u.age,
+                   c.name as city_name,
+                   p.bio as profile_bio,
+                   r.id as role_id,
+                   r.name as role_name
+            from users u
+            left join cities c on c.id = u.city_id
+            left join profiles p on p.id = u.profile_id
+            left join userroles ur on ur.user_id = u.id
+            left join roles r on r.id = ur.role_id
+            order by u.id, r.id
+            """.trimIndent()
+        ).resultList
+
+        val usersById = linkedMapOf<Int, MutableUserRichResponse>()
+        rows.forEach { rawRow ->
+            val row = rawRow as Array<*>
+            val userId = (row[0] as Number).toInt()
+            val user = usersById.getOrPut(userId) {
+                MutableUserRichResponse(
+                    id = userId,
+                    name = row[1] as String,
+                    email = row[2] as String,
+                    age = (row[3] as Number).toInt(),
+                    city = row[4] as String?,
+                    profileBio = row[5] as String?
+                )
+            }
+            (row[7] as String?)?.let(user.roles::add)
+        }
+
+        return usersById.values.map { it.toResponse() }
+    }
 
     fun findFiltering(userFilter: UserFilter): List<User> {
         val spec = Specification<User> { root, _, cb ->
@@ -111,5 +179,25 @@ class UserService(private val repo: UserRepository) {
                 }
             }
         return repo.findAll(spec)
+    }
+
+    private data class MutableUserRichResponse(
+        val id: Int,
+        val name: String,
+        val email: String,
+        val age: Int,
+        val roles: LinkedHashSet<String> = linkedSetOf(),
+        val city: String?,
+        val profileBio: String?,
+    ) {
+        fun toResponse() = UserRichResponse(
+            id = id,
+            name = name,
+            email = email,
+            age = age,
+            roles = roles,
+            city = city,
+            profileBio = profileBio
+        )
     }
 }
