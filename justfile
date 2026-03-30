@@ -1,6 +1,8 @@
 #!/usr/bin/env just --justfile
 
 compose_file := 'deployment/docker-compose.yaml'
+spring_jpa_base_url := 'http://nginx:4000/spring-jpa'
+spring_exposed_base_url := 'http://nginx:4000/spring-exposed'
 
 default:
   @just -l
@@ -42,17 +44,27 @@ dep-jpa:
 prepare-db:
   cat db/clear-data.sql | docker exec -i db-service psql -U postgres -d postgres
 
-k6-test name *args:
+run-k6 script base_url:
+  cd k6-testing && MSYS_NO_PATHCONV=1 docker compose run --rm \
+  -e USERS=20 \
+  -e SLEEP_MS=0 \
+  -e BASE_URL={{base_url}} \
+  k6 run /k6-scripts/{{script}}
+
+k6-test test base_url: prepare-db
+  just run-k6 {{test}}.js {{base_url}}
+
+k6-test-both script:
   start="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
-  ./gradlew :spring-exposed:k6-{{name}} {{args}}; \
+  just k6-test {{script}} {{spring_exposed_base_url}}; \
   just _wait; \
-  ./gradlew :spring-jpa:k6-{{name}} {{args}}; \
+  just k6-test {{script}} {{spring_jpa_base_url}}; \
   end="$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")"; \
   url="http://localhost:3001/d/g6zdg6/k6-load-testing-results-copy?orgId=1&from=$start&to=$end&timezone=browser&var-Measurement=\$__all"; \
   mkdir -p logs; \
-  printf '"%s","%s","%s"\n' "{{name}}" "$start" "$url" >> logs/k6-tests.csv; \
+  printf '"%s","%s","%s"\n' "{{script}}" "$start" "$url" >> logs/k6-tests.csv; \
   echo Results:; \
   echo "$url"
 
-_wait t="10s":
+_wait t="10":
   sleep {{t}}
