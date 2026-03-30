@@ -48,6 +48,19 @@ class UserService {
         User.all().toList()
 
     @Transactional(readOnly = true)
+    fun findAllSql(): List<UserResponse> =
+        Users.selectAll()
+            .orderBy(Users.id to SortOrder.ASC)
+            .map { row ->
+                UserResponse(
+                    id = row[Users.id].value,
+                    name = row[Users.name],
+                    email = row[Users.email],
+                    age = row[Users.age]
+                )
+            }
+
+    @Transactional(readOnly = true)
     fun findAllRich(): List<UserRichResponse> {
         val users = User.all().with(
             User::city,
@@ -55,6 +68,35 @@ class UserService {
             User::roles
         )
         return users.map { it.toRichResponse() }
+    }
+
+    @Transactional(readOnly = true)
+    fun findAllRichSql(): List<UserRichResponse> {
+        val query = Users
+            .leftJoin(Cities, onColumn = { city }, otherColumn = { Cities.id })
+            .leftJoin(Profiles, onColumn = { Users.profile }, otherColumn = { Profiles.id })
+            .leftJoin(UserRoles, onColumn = { Users.id }, otherColumn = { UserRoles.user })
+            .leftJoin(Roles, onColumn = { UserRoles.role }, otherColumn = { Roles.id })
+            .selectAll()
+            .orderBy(Users.id to SortOrder.ASC, Roles.id to SortOrder.ASC)
+
+        val usersById = linkedMapOf<Int, MutableUserRichResponse>()
+        query.forEach { row ->
+            val userId = row[Users.id].value
+            val user = usersById.getOrPut(userId) {
+                MutableUserRichResponse(
+                    id = userId,
+                    name = row[Users.name],
+                    email = row[Users.email],
+                    age = row[Users.age],
+                    city = row.getOrNull(Cities.name),
+                    profileBio = row.getOrNull(Profiles.bio)
+                )
+            }
+            row.getOrNull(Roles.name)?.let(user.roles::add)
+        }
+
+        return usersById.values.map { it.toResponse() }
     }
 
     @Transactional(readOnly = true)
@@ -121,4 +163,24 @@ class UserService {
     @Transactional(readOnly = true)
     fun findNameEmailByAge(age: Int): List<UserNameEmail> =
         UserNameEmail.find { Users.age eq age }.toList()
+
+    private data class MutableUserRichResponse(
+        val id: Int,
+        val name: String,
+        val email: String,
+        val age: Int,
+        val roles: LinkedHashSet<String> = linkedSetOf(),
+        val city: String?,
+        val profileBio: String?,
+    ) {
+        fun toResponse() = UserRichResponse(
+            id = id,
+            name = name,
+            email = email,
+            age = age,
+            roles = roles,
+            city = city,
+            profileBio = profileBio
+        )
+    }
 }

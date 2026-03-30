@@ -111,6 +111,26 @@ class BookOrderControllerTests {
         assertThat(response.body()).contains("\"profileBio\":\"Bio for mock user #1\"")
     }
 
+    @Test
+    fun `get users sql returns same payload as users endpoint`() {
+        val defaultResponse = get("/api/users")
+        val sqlResponse = get("/api/users/sql")
+
+        assertThat(defaultResponse.statusCode()).isEqualTo(200)
+        assertThat(sqlResponse.statusCode()).isEqualTo(200)
+        assertThat(sqlResponse.body()).isEqualTo(defaultResponse.body())
+    }
+
+    @Test
+    fun `get rich users sql returns same payload as rich users endpoint`() {
+        val defaultResponse = get("/api/users/rich")
+        val sqlResponse = get("/api/users/rich/sql")
+
+        assertThat(defaultResponse.statusCode()).isEqualTo(200)
+        assertThat(sqlResponse.statusCode()).isEqualTo(200)
+        assertThat(sqlResponse.body()).isEqualTo(defaultResponse.body())
+    }
+
     private fun postJson(path: String, body: String): HttpResponse<String> {
         val request = HttpRequest.newBuilder()
             .uri(URI("http://localhost:$port$path"))

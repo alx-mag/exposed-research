@@ -16,7 +16,7 @@ class UserController(private val users: UserService) {
         return users.create(request)
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: Int,
         @RequestBody request: UpdateUserRequest
@@ -29,9 +29,19 @@ class UserController(private val users: UserService) {
         return users.findAll().map { it.toResponse() }
     }
 
+    @GetMapping("/sql")
+    fun getUsersSql(): List<UserResponse> {
+        return users.findAllSql()
+    }
+
     @GetMapping("/rich")
     fun getUsersRich(): List<UserRichResponse> {
         return users.findAllRich()
+    }
+
+    @GetMapping("/rich/sql")
+    fun getUsersRichSql(): List<UserRichResponse> {
+        return users.findAllRichSql()
     }
 
     @GetMapping("/filtering")
