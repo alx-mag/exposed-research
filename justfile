@@ -4,6 +4,8 @@ compose_file := 'deployment/docker-compose.yaml'
 spring_jpa_base_url := 'http://nginx:4000/spring-jpa'
 spring_exposed_base_url := 'http://nginx:4000/spring-exposed'
 
+alias tb := k6-test-both
+
 default:
   @just -l
 

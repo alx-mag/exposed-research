@@ -7,8 +7,8 @@ k6 run ./js/<test-name>.js -e USERS=20 -e PORT=8080
 You can also run k6 from the root Gradle project, which makes the tasks available in the IntelliJ Gradle tool window:
 
 ```shell
-./gradlew k6Run -Pscript=get-test.js -Ptype=jpa -Pusers=20
-./gradlew k6Run -Pscript=get-filtering-test.js -Ptype=exposed -Pusers=20
+./gradlew k6Run -Pscript=get-users.js -Ptype=jpa -Pusers=20
+./gradlew k6Run -Pscript=get-users-filtering.js -Ptype=exposed -Pusers=20
 ./gradlew k6RunLocal -Pscript=get-test-local.js -Pusers=20 -Pport=9082
 ```
 
