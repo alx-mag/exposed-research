@@ -3,13 +3,16 @@
 set -euo pipefail
 
 commands=(
-  "just users"
-  "just users-filtering"
-  "just load"
+  "just tb get-users"
+  "just tb get-users-sql"
+  "just tb get-users-filtering"
+  "just tb get-users-rich"
+  "just tb get-users-rich-sql"
+  "just tb load-test"
 )
 
 interval_seconds=20
-duration_seconds=$((60 * 60))
+duration_seconds=$((60 * 60 * 2))
 end_time=$((SECONDS + duration_seconds))
 index=0
 
