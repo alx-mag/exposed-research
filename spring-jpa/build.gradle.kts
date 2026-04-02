@@ -1,8 +1,3 @@
-import buildsrc.Service
-import buildsrc.convention.buildsrc.K6Test
-import buildsrc.recreateComposeService
-import buildsrc.runK6
-import org.gradle.kotlin.dsl.withType
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import java.time.Instant
 
@@ -14,8 +9,6 @@ plugins {
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 description = "spring-jpa"
-
-val prepareDb by rootProject.tasks.named<Exec>("prepareDb")
 
 dependencies {
     implementation(project(":utils"))
@@ -44,37 +37,6 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
-}
-
-tasks.register<Exec>("deployContainer") {
-    dependsOn("bootBuildImage")
-    group = "deploy"
-    description = "Build the spring-jpa image and recreate the spring-jpa container."
-    recreateComposeService("spring-jpa")
-}
-
-tasks.register<Exec>(K6Test.GET_USERS) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-test.js", Service.JPA)
-}
-
-tasks.register<Exec>(K6Test.GET_USERS_FILTERING) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-filtering-test.js", Service.JPA)
-}
-
-tasks.register<Exec>(K6Test.LOAD) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("load-test.js", Service.JPA)
-}
-
-tasks.register<Exec>(K6Test.GET_RICH_USERS) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-rich-test.js", Service.JPA)
 }
 
 tasks.withType<BootBuildImage> {

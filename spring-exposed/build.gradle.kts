@@ -1,7 +1,3 @@
-import buildsrc.Service
-import buildsrc.convention.buildsrc.K6Test
-import buildsrc.recreateComposeService
-import buildsrc.runK6
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import java.time.Instant
 
@@ -12,8 +8,6 @@ plugins {
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 description = "spring-exposed"
-
-val prepareDb = rootProject.tasks.named<Exec>("prepareDb")
 
 dependencies {
     implementation(project(":utils"))
@@ -38,37 +32,6 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-tasks.register<Exec>("deployContainer") {
-    dependsOn("bootBuildImage")
-    group = "deploy"
-    description = "Build the spring-exposed image and recreate the spring-exposed container."
-    recreateComposeService("spring-exposed")
-}
-
-tasks.register<Exec>(K6Test.GET_USERS) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-test.js", Service.EXPOSED)
-}
-
-tasks.register<Exec>(K6Test.GET_USERS_FILTERING) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-filtering-test.js", Service.EXPOSED)
-}
-
-tasks.register<Exec>(K6Test.GET_RICH_USERS) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("get-rich-test.js", Service.EXPOSED)
-}
-
-tasks.register<Exec>(K6Test.LOAD) {
-    dependsOn(prepareDb)
-    group = "k6"
-    runK6("load-test.js", Service.EXPOSED)
 }
 
 tasks.withType<BootBuildImage> {
