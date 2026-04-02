@@ -3,23 +3,13 @@
 compose_file := 'deployment/docker-compose.yaml'
 spring_jpa_base_url := 'http://nginx:4000/spring-jpa'
 spring_exposed_base_url := 'http://nginx:4000/spring-exposed'
+spring_exposed_project := 'spring-exposed'
+spring_jpa_project := 'spring-jpa'
 
 alias tb := k6-test-both
 
 default:
   @just -l
-
-users:
-  @just k6-test GetUsers
-
-rich-users:
-  @just k6-test GetRichUsers
-
-users-filtering:
-  @just k6-test GetUsersFiltering
-
-load:
-  @just k6-test Load
 
 #Restrart service in docker compose
 [group("deploy")]
